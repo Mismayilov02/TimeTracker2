@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="5dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/proyekt_color"
+        android:layout_width="25dp"
+        android:layout_height="15dp"
+        android:layout_marginStart="15dp"
+        app:cardBackgroundColor="@color/open_color"
+        app:layout_constraintBottom_toBottomOf="@+id/proyekt_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/proyekt_text" />
+
+    <TextView
+        android:id="@+id/proyekt_text"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="25dp"
+        android:gravity="start|center_vertical"
+        android:text="@{item.name}"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/proyekt_play_btn"
+        app:layout_constraintStart_toEndOf="@+id/katagory_color"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/proyekt_play_btn"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginEnd="25dp"
+        app:layout_constraintBottom_toBottomOf="@+id/proyekt_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/proyekt_text"
+        app:srcCompat="@drawable/play" />
+</androidx.constraintlayout.widget.ConstraintLayout>
