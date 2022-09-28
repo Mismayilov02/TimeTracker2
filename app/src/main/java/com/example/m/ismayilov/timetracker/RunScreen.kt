@@ -3,16 +3,14 @@ package com.example.m.ismayilov.timetracker
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import android.content.SharedPreferences.Editor
+import android.graphics.Color
 import android.icu.text.SimpleDateFormat
-import android.os.Binder
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.FrameLayout
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
@@ -21,21 +19,20 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.m.ismayilov.timetracker.databinding.FragmentRunScreenBinding
 import com.example.m.ismayilov.timetracker.room.Katagory
 import com.example.m.ismayilov.timetracker.room.MyRoomDatabase
-import com.example.m.ismayilov.timetracker.room.ProjektHistory
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import java.util.Date
 
 class RunScreen : Fragment() {
    var view: FrameLayout? = null
     lateinit var binding: FragmentRunScreenBinding
-    lateinit var katagoryAdapter: KatagoryAdapter
-    lateinit var allProyektRecycleAdapter: AllProyektRecycleAdapter
+//    lateinit var katagoryAdapter: KatagoryAdapter
+    lateinit var katagoryRecycleAdapter: KatagoryRecycleAdapter
     lateinit var runProyektRecycleAdapter: RunProyektRecycleAdapter
     lateinit var katagory: MutableList<Katagory>
     lateinit var katagoryHistory: MutableList<Katagory>
     lateinit var runKatagoryHistory: MutableList<Katagory>
     lateinit var myRoomDatabase: MyRoomDatabase
+    var hashMap = HashMap<String , MutableList<Katagory>>()
     @RequiresApi(Build.VERSION_CODES.N)
     val simpleToDay  = SimpleDateFormat("yyyy-MM-dd")
     var katagoryname: String =""
@@ -59,27 +56,19 @@ class RunScreen : Fragment() {
 
         lifecycleScope.launch {
             katagory = myRoomDatabase.katagoryDao().read_null_katagory("null")
-            allProyektRecycleAdapter = AllProyektRecycleAdapter(requireContext() , katagory)
+            for(i in katagory){
+                val hasmapKatagory = myRoomDatabase.katagoryDao().read_katagory(i.katagory_name )
+//                if(hasmapKatagory.)
+                    hashMap.put(i.katagory_name ,hasmapKatagory )
+            }
+            katagoryRecycleAdapter = KatagoryRecycleAdapter(requireContext() , katagory ,hashMap)
             binding.runAllProyekt.setHasFixedSize(true)
             binding.runAllProyekt.setLayoutManager(GridLayoutManager(activity, 1))
-            binding.runAllProyekt.adapter = allProyektRecycleAdapter
-//            katagoryAdapter = KatagoryAdapter(requireActivity() , katagory)
-//            binding.spinner.adapter = katagoryAdapter
-//
-//            binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-//                override fun onItemSelected(
-//                    parent: AdapterView<*>,
-//                    view: View,
-//                    position: Int,
-//                    id: Long
-//                ) {
-//                    katagoryname = katagory.get(position).katagory_name
-//                    setAllProyekt(katagoryname)
-//                    setRunProyekt(katagoryname)
-//                } // to close the onItemSelected
-//                override fun onNothingSelected(parent: AdapterView<*>) {
-//                }
-//            }
+            binding.runAllProyekt.adapter = katagoryRecycleAdapter
+            katagoryRecycleAdapter.onItemClick = {
+                val direction = RunScreenDirections.navigationRunToadd(true, it)
+                 Navigation.findNavController(requireView()).navigate(direction)
+            }
             toDateCheck()
         }
 
@@ -102,20 +91,20 @@ class RunScreen : Fragment() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setAllProyekt(katagoryType:String){
-        lifecycleScope.launch{
-            katagoryHistory =myRoomDatabase.katagoryDao().read_notNull_katagory(false)
-            allProyektRecycleAdapter = AllProyektRecycleAdapter(requireContext() ,katagoryHistory )
-            binding.runAllProyekt.setHasFixedSize(true)
-            binding.runAllProyekt.setLayoutManager(GridLayoutManager(activity, 1))
-            binding.runAllProyekt.adapter = allProyektRecycleAdapter
-            allProyektRecycleAdapter.onItemClick = {
-                lifecycleScope.launch{
-                    notfyChangedAdapter(it , false)
-                }
-            }
-        }
-    }
+//    fun setAllProyekt(katagoryType:String){
+//        lifecycleScope.launch{
+//            katagoryHistory =myRoomDatabase.katagoryDao().read_notNull_katagory(false)
+////            allProyektRecycleAdapter = AllProyektRecycleAdapter(requireContext() ,katagoryHistory!!)
+//            binding.runAllProyekt.setHasFixedSize(true)
+//            binding.runAllProyekt.setLayoutManager(GridLayoutManager(activity, 1))
+//            binding.runAllProyekt.adapter = allProyektRecycleAdapter
+//            allProyektRecycleAdapter.onItemClick = {
+//                lifecycleScope.launch{
+////                    notfyChangedAdapter(it , false)
+//                }
+//            }
+//        }
+//    }
 
     fun setRunProyekt(katagoryType:String){
         lifecycleScope.launch{
@@ -142,7 +131,7 @@ class RunScreen : Fragment() {
 
             runKatagoryHistory = myRoomDatabase.katagoryDao().read_notNull_katagory(true)
             katagoryHistory = myRoomDatabase.katagoryDao().read_notNull_katagory(false)
-            allProyektRecycleAdapter.update(katagoryHistory)
+//            allProyektRecycleAdapter.update(katagoryHistory)
             runProyektRecycleAdapter.update(runKatagoryHistory)
         }
     }

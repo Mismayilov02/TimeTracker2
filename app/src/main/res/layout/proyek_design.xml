@@ -28,13 +28,13 @@
         android:text="@{item.name}"
         android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/proyekt_play_btn"
-        app:layout_constraintStart_toEndOf="@+id/katagory_color"
+        app:layout_constraintStart_toEndOf="@+id/proyekt_color"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/proyekt_play_btn"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_marginEnd="25dp"
         app:layout_constraintBottom_toBottomOf="@+id/proyekt_text"
         app:layout_constraintEnd_toEndOf="parent"
