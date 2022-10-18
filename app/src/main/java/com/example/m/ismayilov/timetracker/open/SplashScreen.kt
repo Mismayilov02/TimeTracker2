@@ -1,4 +1,4 @@
-package com.example.m.ismayilov.timetracker
+package com.example.m.ismayilov.timetracker.open
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -12,6 +12,7 @@ import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation.findNavController
+import com.example.m.ismayilov.timetracker.R
 import com.example.m.ismayilov.timetracker.databinding.FragmentSplashScreenBinding
 
 class SplashScreen : Fragment() {
@@ -30,12 +31,12 @@ class SplashScreen : Fragment() {
         view = binding.root
 
         animation = AnimationUtils.loadAnimation(activity, R.anim.alpha_anim)
-        binding.imageView.animation = animation
-
+        binding.splashimageName.animation = animation
+        binding.splashimageLogo.animation = animation
 
         Handler(Looper.getMainLooper()).postDelayed({
-            findNavController(view!!).navigate(R.id.navigation_splast_tologin)
-        }, 3000)
+            findNavController(view!!).navigate(R.id.action_splashScreen_to_createFragment)
+        }, 2500)
 
         return view
     }

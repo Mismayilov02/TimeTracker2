@@ -7,8 +7,8 @@ import androidx.room.Query
 @Dao
 interface ColorDao {
     @Query("select color_code from history_color")
-    suspend fun read_all_color() : MutableList<String>
+    suspend fun readAllColor() : MutableList<String>
 
     @Insert
-    suspend fun write_color(historyColor: HistoryColor)
+    suspend fun writeColor(historyColor: HistoryColor)
 }

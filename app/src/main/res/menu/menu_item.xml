@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:menuCategory="system">
+        <item
+            android:id="@+id/time"
+            android:icon="@drawable/time_quarter_past"
+            android:title="10:23:11" />
+        <item
+            android:id="@+id/runScreen2"
+            android:icon="@drawable/time_quarter_past"
+            android:title="Home" />
+        <item
+            android:id="@+id/historyFragment"
+            android:icon="@drawable/time_past"
+            android:title="@string/history" />
+        <item
+            android:id="@+id/settings"
+            android:icon="@drawable/settings"
+            android:title="@string/settings" />
+    </group>
+
+</menu>

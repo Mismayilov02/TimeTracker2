@@ -6,52 +6,39 @@
     app:startDestination="@id/splashScreen">
     <fragment
         android:id="@+id/splashScreen"
-        android:name="com.example.m.ismayilov.timetracker.SplashScreen"
+        android:name="com.example.m.ismayilov.timetracker.open.SplashScreen"
         android:label="fragment_splash_screen"
         tools:layout="@layout/fragment_splash_screen" >
         <action
             android:id="@+id/navigation_splast_tologin"
             app:destination="@id/login"
+            app:enterAnim="@android:anim/fade_in"
+            app:popUpTo="@id/splashScreen"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splashScreen_to_createFragment"
+            app:destination="@id/createFragment"
             app:popUpTo="@id/splashScreen"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/login"
-        android:name="com.example.m.ismayilov.timetracker.Login"
+        android:name="com.example.m.ismayilov.timetracker.open.Login"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
-            android:id="@+id/navigation_login_torunscreen"
-            app:destination="@id/runScreen"
+            android:id="@+id/action_login_to_createFragment"
+            app:destination="@id/createFragment"
             app:popUpTo="@id/login"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
-        android:id="@+id/runScreen"
-        android:name="com.example.m.ismayilov.timetracker.RunScreen"
-        android:label="fragment_run_screen"
-        tools:layout="@layout/fragment_run_screen" >
+        android:id="@+id/createFragment"
+        android:name="com.example.m.ismayilov.timetracker.CreateFragment"
+        android:label="fragment_create"
+        tools:layout="@layout/fragment_create" >
         <action
-            android:id="@+id/navigation_run_toadd"
-            app:destination="@id/addProek" />
-    </fragment>
-    <fragment
-        android:id="@+id/addProek"
-        android:name="com.example.m.ismayilov.timetracker.AddProek"
-        android:label="fragment_add_proek"
-        tools:layout="@layout/fragment_add_proek" >
-        <action
-            android:id="@+id/navigation_run_backprojekt"
-            app:destination="@id/runScreen"
-            app:popUpTo="@id/addProek"
-            app:popUpToInclusive="true" />
-        <argument
-            android:name="katagory_or_proyek"
-            app:argType="boolean"
-            android:defaultValue="false" />
-        <argument
-            android:name="katagory_name"
-            app:argType="string"
-            android:defaultValue="a" />
+            android:id="@+id/action_createFragment_to_login"
+            app:destination="@id/login" />
     </fragment>
 </navigation>

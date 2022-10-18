@@ -35,6 +35,11 @@ class ColorRecycleAdapte(val context: Context , val colors: MutableList<String> 
         holder.baseColor.tag = position
         holder.colorLine.setCardBackgroundColor(Color.parseColor(colors.get(position)))
 
+        if (position ==1){
+            holder.colorLine.isVisible = true
+            onItemClick?.invoke(colors.get(position))
+        }
+
         colorLines.add(holder.colorLine)
 
         holder.baseColor.setOnClickListener {

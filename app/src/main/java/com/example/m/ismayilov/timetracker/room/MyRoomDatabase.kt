@@ -5,11 +5,12 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 
-@Database(entities = [HistoryColor::class , Katagory::class , ProjektHistory::class] , version = 1 , exportSchema = false)
+@Database(entities = [HistoryColor::class , Katagory::class , RunHistory::class ] , version = 1 , exportSchema = false)
 abstract  class MyRoomDatabase : RoomDatabase() {
     abstract fun colorDao(): ColorDao
     abstract fun katagoryDao():KatagoryDao
-    abstract fun projectDao():ProjectDao
+    abstract fun runDao():RunDao
+
 
     companion object {
 
