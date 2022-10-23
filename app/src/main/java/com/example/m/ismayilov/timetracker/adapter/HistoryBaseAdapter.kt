@@ -21,7 +21,6 @@ class HistoryBaseAdapter(var context: Context, var list: MutableList<String>, va
         var date :TextView
         var listView :RecyclerView
 
-
         init {
             date= view.findViewById(R.id.history_date)
             listView = view.findViewById(R.id.history_recylerview)
@@ -36,15 +35,10 @@ class HistoryBaseAdapter(var context: Context, var list: MutableList<String>, va
 
     override fun onBindViewHolder(holder: proyektViewDesign, position: Int) {
         holder.date.text = list.get(position)
-
-//        if(hashMap.get(list.get(position).katagory_name)!!.size !=0) {
             var historyAdapter = HistoryAdapter(context, hashMap.get(list.get(position)))
             holder.listView.setHasFixedSize(true)
             holder.listView.setLayoutManager(GridLayoutManager(context, 1))
             holder.listView.adapter = historyAdapter!!
-//        }
-
-
 
     }
 
@@ -52,10 +46,4 @@ class HistoryBaseAdapter(var context: Context, var list: MutableList<String>, va
         return list.size
     }
 
-//
-//    fun update(katagory: MutableList<Katagory> ,hashMap: HashMap<String , MutableList<Katagory>>  ){
-//        this.katagory = katagory
-//        this.hashMap = hashMap
-//        notifyDataSetChanged()
-//    }
 }

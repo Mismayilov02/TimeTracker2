@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.m.ismayilov.timetracker.adapter.HistoryBaseAdapter
@@ -42,6 +43,7 @@ class HistoryFragment : Fragment() {
             for (i in historyBase){
                 history.put(i , myRoomDatabase.runDao().readTime(i))
             }
+            if(historyBase.size !=0  ) binding.historyEmpty.isVisible =false
             setAdapterListView(historyBase , history)
         }
     }

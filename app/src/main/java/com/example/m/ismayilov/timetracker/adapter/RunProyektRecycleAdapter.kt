@@ -25,12 +25,10 @@ class RunProyektRecycleAdapter(val context: Context, var proyekts: MutableList<R
         var color: ImageView
         var name :TextView
         var timeText :TextView
-//        var btn : ImageView
 
         init {
             color = view.findViewById(R.id.run_proyekt_color)
             name= view.findViewById(R.id.run_proyekt_text)
-//            btn= view.findViewById(R.id.run_proyekt_play_btn)
             timeText= view.findViewById(R.id.run_proyekt_time_text)
         }
 

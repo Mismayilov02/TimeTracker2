@@ -1,6 +1,7 @@
 package com.example.m.ismayilov.timetracker
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.navigation.findNavController
@@ -13,11 +14,14 @@ class BaseActivity : AppCompatActivity() {
 
 
     lateinit var binding: ActivityBaseBinding
+    lateinit var sharedPreferencesManager: SharedPreferencesManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityBaseBinding.inflate(getLayoutInflater());
         val  view = binding.root
         setContentView(view)
+        sharedPreferencesManager  = SharedPreferencesManager(this)
 
         binding.runMenuBtn2.setOnClickListener {
             binding.drawerlayout.openDrawer(GravityCompat.START)
@@ -26,5 +30,12 @@ class BaseActivity : AppCompatActivity() {
         val navHost = supportFragmentManager.findFragmentById(R.id.navhost) as NavHostFragment
 
         NavigationUI.setupWithNavController(binding.navigationview, navHost.navController)
+
+        if (sharedPreferencesManager.getBoolean("admin" , true)!!){
+            var menu = binding.navigationview.menu
+            menu.findItem(R.id.permission).isVisible = false
+            menu.findItem(R.id.onlinenavhost).isVisible = false
+        }
+
     }
 }

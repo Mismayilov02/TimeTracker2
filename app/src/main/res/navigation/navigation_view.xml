@@ -31,14 +31,24 @@
             app:destination="@id/createFragment"
             app:popUpTo="@id/login"
             app:popUpToInclusive="true" />
+        <argument
+            android:name="wait"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/createFragment"
-        android:name="com.example.m.ismayilov.timetracker.CreateFragment"
+        android:name="com.example.m.ismayilov.timetracker.open.CreateFragment"
         android:label="fragment_create"
         tools:layout="@layout/fragment_create" >
         <action
             android:id="@+id/action_createFragment_to_login"
-            app:destination="@id/login" />
+            app:destination="@id/login"
+            app:popUpTo="@id/createFragment"
+            app:popUpToInclusive="true" >
+            <argument
+                android:name="wait"
+                android:defaultValue="false" />
+        </action>
     </fragment>
 </navigation>

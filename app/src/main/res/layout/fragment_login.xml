@@ -27,13 +27,15 @@
             app:layout_constraintBottom_toTopOf="@+id/login_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:passwordToggleEnabled="true">
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/open_color">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/login_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/textview_backround"
-                android:hint="Şifrə"
+                android:hint="@string/ifr"
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:password="true"
@@ -51,7 +53,7 @@
             android:backgroundTint="@color/open_color"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            android:text="Daxil ol"
+            android:text="@string/daxil_ol"
             android:textAllCaps="false"
             android:textColor="@color/white"
             app:cornerRadius="10dp"
@@ -77,12 +79,13 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/create_email"
+                android:id="@+id/login_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/textview_backround"
-                android:hint="Email"
-                android:inputType="textEmailAddress"
+                android:hint="@string/phone"
+                android:inputType="phone"
+                android:maxLength="10"
                 android:maxLines="1"
                 android:textColor="@color/open_color"
                 android:textColorHint="@color/open_color"

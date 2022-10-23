@@ -37,4 +37,14 @@
         android:name="com.example.m.ismayilov.timetracker.HistoryFragment"
         android:label="fragment_history"
         tools:layout="@layout/fragment_history" />
+    <fragment
+        android:id="@+id/onlinenavhost"
+        android:name="com.example.m.ismayilov.timetracker.Online"
+        android:label="fragment_online"
+        tools:layout="@layout/fragment_online" />
+    <fragment
+        android:id="@+id/permission"
+        android:name="com.example.m.ismayilov.timetracker.Permission"
+        android:label="fragment_permission"
+        tools:layout="@layout/fragment_permission" />
 </navigation>

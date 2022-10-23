@@ -25,13 +25,29 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <Button
+                android:id="@+id/katagory_design_save_btn"
+                android:layout_width="95dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/open_color"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="Save"
+                android:visibility="gone"
+                app:cornerRadius="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/katagory_recylerview"
+                tools:ignore="TouchTargetSizeCheck" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/katagory_recylerview"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/katagory_expend" />

@@ -8,16 +8,24 @@
             android:title="10:23:11" />
         <item
             android:id="@+id/runScreen2"
-            android:icon="@drawable/time_quarter_past"
+            android:icon="@drawable/user"
             android:title="Home" />
         <item
             android:id="@+id/historyFragment"
             android:icon="@drawable/time_past"
             android:title="@string/history" />
+
         <item
-            android:id="@+id/settings"
-            android:icon="@drawable/settings"
-            android:title="@string/settings" />
+            android:id="@+id/onlinenavhost"
+            android:icon="@drawable/group"
+            android:title="@string/users"
+            android:visibility="visible" />
+        <item
+            android:id="@+id/permission"
+            android:icon="@drawable/authorization"
+            android:title="@string/authorization"
+            android:visibility="visible" />
+
     </group>
 
 </menu>

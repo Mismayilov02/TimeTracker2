@@ -4,4 +4,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="history">History</string>
     <string name="settings">Settings</string>
+    <string name="authorization">Authorization</string>
+    <string name="users">Users</string>
+    <string name="daxil_ol">Daxil ol</string>
+    <string name="ifr">Şifrə</string>
+    <string name="phone">Phone</string>
 </resources>

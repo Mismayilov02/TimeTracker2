@@ -4,17 +4,13 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.icu.text.SimpleDateFormat
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.FrameLayout
-import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -27,7 +23,6 @@ import com.example.m.ismayilov.timetracker.databinding.FragmentRunScreenBinding
 import com.example.m.ismayilov.timetracker.room.Katagory
 import com.example.m.ismayilov.timetracker.room.MyRoomDatabase
 import com.example.m.ismayilov.timetracker.room.RunHistory
-import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -35,17 +30,14 @@ import java.util.*
 class RunScreen : Fragment() , OnClickLIstener {
    var view: FrameLayout? = null
     lateinit var binding: FragmentRunScreenBinding
-//    lateinit var katagoryAdapter: KatagoryAdapter
     lateinit var katagoryRecycleAdapter: KatagoryRecycleAdapter
     lateinit var runProyektRecycleAdapter: RunProyektRecycleAdapter
     lateinit var katagory: MutableList<Katagory>
-    lateinit var katagoryHistory: MutableList<Katagory>
     lateinit var runKatagoryHistory: MutableList<RunHistory>
     lateinit var myRoomDatabase: MyRoomDatabase
     var hashMap = HashMap<String , MutableList<Katagory>>()
     @RequiresApi(Build.VERSION_CODES.N)
     val simpleToDay  = SimpleDateFormat("yyyy-MM-dd")
-    var katagoryname: String =""
     lateinit var sharedPreferences: SharedPreferences
     lateinit var editor: SharedPreferences.Editor
 
@@ -75,9 +67,6 @@ class RunScreen : Fragment() , OnClickLIstener {
 
 
         binding.runAddKatagory.setOnClickListener {
-            val firebase: FirebaseDatabase = FirebaseDatabase.getInstance()
-           var myRef = firebase.getReference("user")
-            myRef.setValue("employeeInfo")
             Navigation.findNavController(it).navigate(R.id.action_runScreen2_to_addProek2)
         }
 
@@ -95,7 +84,6 @@ class RunScreen : Fragment() , OnClickLIstener {
     fun updateRun(id:Int , play: Boolean) {
         lifecycleScope.launch {
             if(myRoomDatabase.runDao().readAllKatagory(true).size <= 2 || play) {
-
                 val run = myRoomDatabase.katagoryDao().readId(id)
                 myRoomDatabase.katagoryDao().updateRun(id, !run.run)
                 katagory = myRoomDatabase.katagoryDao().readNullKatagory("null")
@@ -106,7 +94,7 @@ class RunScreen : Fragment() , OnClickLIstener {
                 }
                 katagoryRecycleAdapter.update(katagory, hashMap)
             }else{
-                getMaxDialog()
+                ArtelDialog().getMaxDialog(requireContext())
             }
 
 
@@ -117,7 +105,7 @@ class RunScreen : Fragment() , OnClickLIstener {
         val time  =sharedPreferences.getString("todate" , "1111.11.11")
         lifecycleScope.launch {
             lateinit var runUpdate:RunHistory
-            val katagoryRun = myRoomDatabase.runDao().readDalyTrue(katagory.id ,time!!)
+            val katagoryRun = myRoomDatabase.runDao().readDalyTrue(katagory.id ,time!! , true)
 
             if (katagoryRun != null){
 
@@ -193,25 +181,16 @@ class RunScreen : Fragment() , OnClickLIstener {
         setExpendValues(id , expend)
     }
 
-fun setDesignRunIconView(size:Int){
-    if(size== 0){
-        binding.runscreenClock.isVisible  = false
-        binding.runscreenPlay.isVisible = false
-    }
-    else{
-        binding.runscreenClock.isVisible  = true
-        binding.runscreenPlay.isVisible = true
-    }
-
-}
-    fun getMaxDialog() {
-        val dialog = Dialog(requireContext())
-        dialog.setContentView(R.layout.run_max_dialog)
-        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.show()
-        dialog.findViewById<ImageView>(R.id.run_max_btn).setOnClickListener {
-            dialog.dismiss()
+    fun setDesignRunIconView(size:Int){
+        if(size== 0){
+            binding.runscreenClock.isVisible  = false
+            binding.runscreenPlay.isVisible = false
+        }
+        else{
+            binding.runscreenClock.isVisible  = true
+            binding.runscreenPlay.isVisible = true
         }
 
     }
+
 }

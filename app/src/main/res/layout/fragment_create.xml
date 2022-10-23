@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".CreateFragment">
+    tools:context=".open.CreateFragment">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -38,7 +38,7 @@
                 android:maxLines="1"
                 android:textColor="@color/open_color"
                 android:textColorHint="@color/open_color"
-                tools:ignore="InvalidId" />
+                 />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -108,12 +108,13 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/create_email"
+                android:id="@+id/create_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/textview_backround"
-                android:hint="Email"
-                android:inputType="textEmailAddress"
+                android:hint="Phone"
+                android:inputType="phone"
+                android:maxLength="10"
                 android:maxLines="1"
                 android:textColor="@color/open_color"
                 android:textColorHint="@color/open_color"
