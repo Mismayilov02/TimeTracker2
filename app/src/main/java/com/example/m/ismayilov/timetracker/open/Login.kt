@@ -18,6 +18,7 @@ import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.m.ismayilov.timetracker.*
 import com.example.m.ismayilov.timetracker.R
@@ -31,6 +32,7 @@ class Login : Fragment() {
 
     lateinit var binding: FragmentLoginBinding
     var password:String = ""
+    var admin = false
     var view :FrameLayout? = null
     var fireBaseDatabase: FirebaseDatabase? = null
     var firebase: DatabaseReference? = null
@@ -51,6 +53,10 @@ class Login : Fragment() {
         val args: LoginArgs by navArgs()
         if(args.wait){
             getChechInfo()
+        }
+
+        binding.loginCreateAccount.setOnClickListener {
+            findNavController().navigate(R.id.action_login_to_createFragment)
         }
 
         binding.loginBtn.setOnClickListener {
@@ -74,15 +80,8 @@ class Login : Fragment() {
         }
 
         if (isEmpty){
-            if("0502500919".equals(binding.loginPhone.text.toString()) && "Ad1000".equals(binding.loginPassword.text.toString())){
-                sharedPreferencesManager.setValue("admin" , false)
-                sharedPreferencesManager.setValue("login" , true)
-                startActivity(Intent(requireContext() , BaseActivity::class.java))
-                requireActivity().finish();
-            }else{
-                login()
-            }
-
+            sharedPreferencesManager.setValue("phone" , binding.loginPhone.text.toString())
+            login()
         }
 
     }
@@ -98,12 +97,13 @@ class Login : Fragment() {
                     try{
                         val value = i.getValue(Users::class.java)
                         password = value!!.password
+                        admin = value.admin
                     }catch (e:Exception){
                         Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
                     }
                 }
                 if (snapshot.exists() && password.equals(binding.loginPassword.text.toString())){
-                    sharedPreferencesManager.setValue("admin" , true)
+                    if (admin){ sharedPreferencesManager.setValue("admin", true) }
                     sharedPreferencesManager.setValue("login" , true)
                     startActivity(Intent(requireContext() , BaseActivity::class.java))
                     requireActivity().finish();
@@ -134,6 +134,11 @@ class Login : Fragment() {
                     }catch (e:Exception){
                         Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
                     }
+                }
+
+                if (!snapshot.exists()) {
+                    dialog.dismiss()
+                    findNavController().navigate(R.id.action_login_to_createFragment)
                 }
 
             }

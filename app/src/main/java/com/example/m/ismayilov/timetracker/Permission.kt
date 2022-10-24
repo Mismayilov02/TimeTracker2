@@ -33,6 +33,7 @@ class Permission : Fragment()  ,FirebaseUpdateOnClick {
 
        fireBaseDatabase = FirebaseDatabase.getInstance()
         firebase = fireBaseDatabase!!.getReference("users/")
+
         var sorgu  = firebase!!.orderByChild("permission").equalTo(false)
 
         sorgu.addValueEventListener(object: ValueEventListener {
@@ -44,7 +45,7 @@ class Permission : Fragment()  ,FirebaseUpdateOnClick {
                     try{
                         val value = i.getValue(Users::class.java)
                         if (value != null) {
-                            val users = Users(value.name , value.phone , "" , value.online ,false)
+                            val users = Users(value.name , value.phone , "" , value.online ,value.permission , value.admin)
                             list.add(users)
 
                         } else {
@@ -59,8 +60,6 @@ class Permission : Fragment()  ,FirebaseUpdateOnClick {
 
             }
             override fun onCancelled(error: DatabaseError) {
-                Log.w(ContentValues.TAG, "Failed to read value.", error.toException())
-                Toast.makeText(requireContext(), "value.email ", Toast.LENGTH_SHORT).show()
             }
 
         })

@@ -10,6 +10,8 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.m.ismayilov.timetracker.adapter.KatagoryRecycleAdapter
 import com.example.m.ismayilov.timetracker.databinding.FragmentOnlineBinding
@@ -18,7 +20,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-class Online : Fragment() {
+class Online : Fragment()  , OnClickLIstener{
 
     lateinit var binding:FragmentOnlineBinding
     lateinit var view: FrameLayout
@@ -36,11 +38,9 @@ class Online : Fragment() {
         var fireBaseDatabase  = FirebaseDatabase.getInstance()
         var firebase = fireBaseDatabase.getReference("users/")
 
-//        ArtelDialog().getSuccesReportDialog(requireContext())
+        var sorgu  = firebase.orderByChild("admin").equalTo(false)
 
-        var sorgu  = firebase.child("0504835648")
-
-        firebase.addValueEventListener(object: ValueEventListener {
+        sorgu.addValueEventListener(object: ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 var list = mutableListOf<Users>()
@@ -48,7 +48,8 @@ class Online : Fragment() {
                     try{
                         val value = i.getValue(Users::class.java)
                         if (value != null) {
-                            val users = Users(value.name , value.phone , "" , value.online ,false)
+                            if(!value.permission) continue
+                            val users = Users(value.name , value.phone , "" , value.online ,value.permission , value.admin , )
                             list.add(users)
 
                         } else {
@@ -77,10 +78,23 @@ class Online : Fragment() {
     }
 
     fun setAdapter(lists:MutableList<Users>){
-        onlineAdapter = OnlineAdapter(requireContext() , lists)
+        onlineAdapter = OnlineAdapter(requireContext(),this@Online , lists)
         binding.onlineRecyclerview.setHasFixedSize(true)
         binding.onlineRecyclerview.setLayoutManager(GridLayoutManager(activity, 1))
         binding.onlineRecyclerview.adapter = onlineAdapter
+    }
+
+    override fun onClickListenerId(id: Int, play: Boolean) {
+
+    }
+
+    override fun onClickListenerAction(katagoryName: String) {
+        val direction = OnlineDirections.actionOnlinenavhostToAddProek2(true, katagoryName, true)
+        findNavController().navigate(direction)
+    }
+
+    override fun onClickSetExpendValues(id: Int, expend: Boolean) {
+        TODO("Not yet implemented")
     }
 
 }

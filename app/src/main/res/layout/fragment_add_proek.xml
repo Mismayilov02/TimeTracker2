@@ -19,6 +19,7 @@
             android:background="@drawable/addprojekt_textview_backround"
             android:hint="katagori adi"
             android:inputType="text"
+            android:maxLines="1"
             android:paddingLeft="15dp"
             android:textColor="@color/white"
             android:textColorHint="@color/white"

@@ -4,22 +4,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    tools:context=".open.Login">
+    tools:context=".AddUser">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
-        <TextView
-            android:id="@+id/login_create_account"
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/texstInputLayout2"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Create account"
-            android:textColor="@color/gradient1"
-            app:layout_constraintEnd_toEndOf="@+id/textInputLayout"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="5dp"
+            android:textColorHint="@color/white"
+            app:boxBackgroundColor="#FFF"
+            app:boxStrokeColor="#FFF"
+            app:boxStrokeWidth="0dp"
+            app:boxStrokeWidthFocused="0dp"
+            app:hintTextColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/textInputLayout2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/add_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/addprojekt_textview_backround"
+                android:hint="Ad Soyad"
+                android:inputType="textEmailAddress"
+                android:maxLines="1"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayout"
@@ -27,44 +45,44 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:layout_marginEnd="15dp"
-            android:layout_marginBottom="38dp"
-            android:textColorHint="@color/open_color"
+            android:layout_marginBottom="25dp"
+            android:textColorHint="@color/white"
             app:boxBackgroundColor="#FFF"
             app:boxStrokeColor="#FFF"
             app:boxStrokeWidth="0dp"
             app:boxStrokeWidthFocused="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/login_btn"
+            app:layout_constraintBottom_toTopOf="@+id/add_add_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:passwordToggleEnabled="true"
-            app:passwordToggleTint="@color/open_color">
+            app:passwordToggleTint="@color/white">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/login_password"
+                android:id="@+id/add_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/textview_backround"
-                android:hint="@string/ifr"
+                android:background="@drawable/addprojekt_textview_backround"
+                android:hint="Şifrə"
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:password="true"
-                android:textColor="@color/open_color"
-                android:textColorHint="@color/open_color" />
+                android:textColor="@color/white"
+                android:textColorHint="@color/white" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/login_btn"
+            android:id="@+id/add_add_btn"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginStart="15dp"
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="50dp"
-            android:backgroundTint="@color/open_color"
+            android:backgroundTint="@color/white"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            android:text="@string/daxil_ol"
+            android:text="Istifadeci Yarat"
             android:textAllCaps="false"
-            android:textColor="@color/white"
+            android:textColor="@color/open_color"
             app:cornerRadius="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -76,23 +94,23 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:layout_marginEnd="15dp"
-            android:layout_marginBottom="10dp"
-            android:textColorHint="@color/open_color"
+            android:layout_marginBottom="5dp"
+            android:textColorHint="@color/white"
             app:boxBackgroundColor="#FFF"
             app:boxStrokeColor="#FFF"
             app:boxStrokeWidth="0dp"
             app:boxStrokeWidthFocused="0dp"
-            app:hintTextColor="@color/open_color"
+            app:hintTextColor="@color/white"
             app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/login_phone"
+                android:id="@+id/add_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/textview_backround"
-                android:hint="@string/phone"
+                android:background="@drawable/addprojekt_textview_backround"
+                android:hint="Phone"
                 android:inputType="phone"
                 android:maxLength="10"
                 android:maxLines="1"
@@ -101,28 +119,5 @@
                 tools:ignore="InvalidId" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/logocolorful"
-            app:layout_constraintBottom_toTopOf="@+id/textInputLayout2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.15"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.5" />
-
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:src="@drawable/nspsolutionscolorful"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toTopOf="@+id/imageView" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </FrameLayout>

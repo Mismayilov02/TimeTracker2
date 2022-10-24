@@ -87,7 +87,7 @@ class CreateFragment : Fragment() {
                 binding.createName.text.toString(),
                 binding.createPhone.text.toString(),
                 binding.createPassword.text.toString(),
-                false,false
+                false,false , false
             )
         )
         sharedPreferencesManager.setValue("create" , true)

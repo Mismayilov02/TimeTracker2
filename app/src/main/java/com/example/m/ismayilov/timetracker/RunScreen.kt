@@ -16,6 +16,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.m.ismayilov.timetracker.adapter.KatagoryRecycleAdapter
 import com.example.m.ismayilov.timetracker.adapter.RunProyektRecycleAdapter
@@ -23,23 +24,27 @@ import com.example.m.ismayilov.timetracker.databinding.FragmentRunScreenBinding
 import com.example.m.ismayilov.timetracker.room.Katagory
 import com.example.m.ismayilov.timetracker.room.MyRoomDatabase
 import com.example.m.ismayilov.timetracker.room.RunHistory
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.launch
 import java.util.*
 
 
 class RunScreen : Fragment() , OnClickLIstener {
    var view: FrameLayout? = null
+    private val serverKey = "BDzjOJCrzrb1AlylmsS4p6HmZmA7EQbVOQFqbZSNvZp0UPafDGP8ya5nUBO29FMgvC8VzqE6VBy8wbnrGvO9z5M"
     lateinit var binding: FragmentRunScreenBinding
     lateinit var katagoryRecycleAdapter: KatagoryRecycleAdapter
     lateinit var runProyektRecycleAdapter: RunProyektRecycleAdapter
     lateinit var katagory: MutableList<Katagory>
     lateinit var runKatagoryHistory: MutableList<RunHistory>
     lateinit var myRoomDatabase: MyRoomDatabase
+    var fireBaseDatabase: FirebaseDatabase? = null
+    var firebase: DatabaseReference? = null
     var hashMap = HashMap<String , MutableList<Katagory>>()
     @RequiresApi(Build.VERSION_CODES.N)
-    val simpleToDay  = SimpleDateFormat("yyyy-MM-dd")
-    lateinit var sharedPreferences: SharedPreferences
-    lateinit var editor: SharedPreferences.Editor
+    lateinit var sharedPreferencesManager: SharedPreferencesManager
+
 
 
     @SuppressLint("SuspiciousIndentation")
@@ -53,35 +58,29 @@ class RunScreen : Fragment() , OnClickLIstener {
         view = binding.root
 
         myRoomDatabase = MyRoomDatabase.getDatabase(requireContext())
-        sharedPreferences =  requireContext().getSharedPreferences("user" , Context.MODE_PRIVATE)
-        editor = sharedPreferences.edit()
-
-        toDateCheck()
+        sharedPreferencesManager = SharedPreferencesManager(requireContext())
+        fireBaseDatabase = FirebaseDatabase.getInstance()
+        firebase = fireBaseDatabase!!.getReference("users/")
+//        FireBaseSendMessage.SetServerKey(serverKey)
         setAdapterDefault()
         setAdapterRun()
 
 
         binding.runscreenEmptyText.setOnClickListener {
-            Navigation.findNavController(it).navigate(R.id.action_runScreen2_to_addProek2)
+            findNavController().navigate(R.id.action_runScreen2_to_addProek2)
         }
 
 
         binding.runAddKatagory.setOnClickListener {
-            Navigation.findNavController(it).navigate(R.id.action_runScreen2_to_addProek2)
+            findNavController().navigate(R.id.action_runScreen2_to_addProek2)
         }
 
         return view
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    fun toDateCheck(){
-        if(!sharedPreferences.getString("todate" , "1111.11.11").equals(simpleToDay.format(Date().time))){
-            editor.putString("todate" , simpleToDay.format(Date().time)).apply()
-            editor.commit()
-        }
-    }
 
-    fun updateRun(id:Int , play: Boolean) {
+    @SuppressLint("NewApi")
+    fun updateRun(id:Int, play: Boolean) {
         lifecycleScope.launch {
             if(myRoomDatabase.runDao().readAllKatagory(true).size <= 2 || play) {
                 val run = myRoomDatabase.katagoryDao().readId(id)
@@ -101,8 +100,10 @@ class RunScreen : Fragment() , OnClickLIstener {
         }
     }
 
+
+    @SuppressLint("NewApi")
     fun createrunProject(katagory: Katagory){
-        val time  =sharedPreferences.getString("todate" , "1111.11.11")
+        val time  =sharedPreferencesManager.getString("todate" , "1111.11.11")
         lifecycleScope.launch {
             lateinit var runUpdate:RunHistory
             val katagoryRun = myRoomDatabase.runDao().readDalyTrue(katagory.id ,time!! , true)
@@ -128,6 +129,7 @@ class RunScreen : Fragment() , OnClickLIstener {
             runKatagoryHistory = myRoomDatabase.runDao().readAllKatagory(true)
             runProyektRecycleAdapter.update(runKatagoryHistory)
             setDesignRunIconView(runKatagoryHistory.size)
+            checkIsOnline(runKatagoryHistory.size)
 
         }
 
@@ -158,7 +160,6 @@ class RunScreen : Fragment() , OnClickLIstener {
             binding.runRunProyekt.setHasFixedSize(true)
             binding.runRunProyekt.setLayoutManager(GridLayoutManager(activity, 1))
             binding.runRunProyekt.adapter = runProyektRecycleAdapter
-//            changeTime()
         }
     }
 
@@ -190,6 +191,16 @@ class RunScreen : Fragment() , OnClickLIstener {
             binding.runscreenClock.isVisible  = true
             binding.runscreenPlay.isVisible = true
         }
+
+    }
+
+    @SuppressLint("NewApi")
+    fun checkIsOnline(size: Int){
+//        var online = false
+//        if (size != 0)  online = true
+//        val updateValue = HashMap<String, Any>()
+//        updateValue["online"] = online
+//        firebase!!.child(sharedPreferencesManager.getString("phone" , "userDefaultPhone").toString()).updateChildren(updateValue)
 
     }
 

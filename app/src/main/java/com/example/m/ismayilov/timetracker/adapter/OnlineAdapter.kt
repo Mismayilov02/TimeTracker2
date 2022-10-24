@@ -10,20 +10,32 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.m.ismayilov.timetracker.adapter.KatagoryRecycleAdapter
 import com.example.m.ismayilov.timetracker.room.HistoryColor
 
-class OnlineAdapter(val context: Context , val list: MutableList<Users>  ):RecyclerView.Adapter<OnlineAdapter.cardViewDesign>() {
+class OnlineAdapter(val context: Context , var onClickLIstener: OnClickLIstener,val list: MutableList<Users>,  /*val userProyekt: HashMap<String , MutableList<UserDefaultProject>>*/ ):RecyclerView.Adapter<OnlineAdapter.cardViewDesign>() {
 
+    var showList  = mutableListOf<Boolean>()
     inner class cardViewDesign(view :View):RecyclerView.ViewHolder(view){
         var name: TextView
         var phone :TextView
-        var isOnline:ImageView
+        var profile:ImageView
+        var edit:ImageView
+        var expand:ImageView
+        var lisview:RecyclerView
+
+
 
         init {
             name = view.findViewById(R.id.online_name_text)
             phone= view.findViewById(R.id.online_phone)
-            isOnline= view.findViewById(R.id.online_onlineview)
+            profile= view.findViewById(R.id.online_profile)
+            expand= view.findViewById(R.id.online_expend)
+            edit= view.findViewById(R.id.online_edit)
+            lisview= view.findViewById(R.id.online_user_recyclerview)
         }
     }
 
@@ -34,15 +46,40 @@ class OnlineAdapter(val context: Context , val list: MutableList<Users>  ):Recyc
     }
 
     override fun onBindViewHolder(holder: cardViewDesign, position: Int) {
+        showList.add(position , false)
         if(list.get(position).online)
-            holder.isOnline.setColorFilter(ContextCompat.getColor(context, R.color.green))
+            holder.profile.setColorFilter(ContextCompat.getColor(context, R.color.green))
 
         holder.name.text = list.get(position).name
         holder.phone.text = list.get(position).phone
+
+        holder.expand.setOnClickListener {
+            setVisibleList(holder , position)
+        }
+
+        holder.edit.setOnClickListener {
+            onClickLIstener.onClickListenerAction(holder.phone.text.toString())
+        }
     }
 
     override fun getItemCount(): Int {
         return list.size
     }
+
+
+
+    fun setVisibleList(holder: OnlineAdapter.cardViewDesign, position: Int){
+        if(showList.get(position) == true){
+            showList.set(position , false)
+            holder.lisview.isVisible = false
+            holder.expand.setImageResource(R.drawable.angle_down)
+
+        }else{
+            showList.set(position , true)
+            holder.lisview.isVisible = true
+            holder.expand.setImageResource(R.drawable.up)
+        }
+    }
+
 
 }
