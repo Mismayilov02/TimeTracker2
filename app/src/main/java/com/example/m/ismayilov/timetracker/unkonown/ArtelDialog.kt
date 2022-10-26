@@ -1,4 +1,4 @@
-package com.example.m.ismayilov.timetracker
+package com.example.m.ismayilov.timetracker.unkonown
 
 import android.app.Dialog
 import android.content.Context
@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import androidx.navigation.Navigation
+import com.example.m.ismayilov.timetracker.R
 
 class ArtelDialog {
 

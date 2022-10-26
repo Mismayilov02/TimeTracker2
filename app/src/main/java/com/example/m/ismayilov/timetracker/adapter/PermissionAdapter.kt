@@ -1,17 +1,13 @@
 package com.example.m.ismayilov.timetracker
 
 import android.content.Context
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import com.example.m.ismayilov.timetracker.room.HistoryColor
+import com.example.m.ismayilov.timetracker.onClick.FirebaseUpdateOnClick
 
 class PermissionAdapter(val context: Context, val list: MutableList<Users>   , val firebaseUpdateOnClick: FirebaseUpdateOnClick):RecyclerView.Adapter<PermissionAdapter.cardViewDesign>() {
 

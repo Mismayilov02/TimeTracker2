@@ -1,22 +1,17 @@
 package com.example.m.ismayilov.timetracker
 
 import android.content.Context
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.navigation.Navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.example.m.ismayilov.timetracker.adapter.KatagoryRecycleAdapter
-import com.example.m.ismayilov.timetracker.room.HistoryColor
+import com.example.m.ismayilov.timetracker.onClick.OnClickLIstener
 
-class OnlineAdapter(val context: Context , var onClickLIstener: OnClickLIstener,val list: MutableList<Users>,  /*val userProyekt: HashMap<String , MutableList<UserDefaultProject>>*/ ):RecyclerView.Adapter<OnlineAdapter.cardViewDesign>() {
+class OnlineAdapter(val context: Context, var onClickLIstener: OnClickLIstener, val list: MutableList<Users>,  /*val userProyekt: HashMap<String , MutableList<UserDefaultProject>>*/ ):RecyclerView.Adapter<OnlineAdapter.cardViewDesign>() {
 
     var showList  = mutableListOf<Boolean>()
     inner class cardViewDesign(view :View):RecyclerView.ViewHolder(view){
@@ -25,6 +20,7 @@ class OnlineAdapter(val context: Context , var onClickLIstener: OnClickLIstener,
         var profile:ImageView
         var edit:ImageView
         var expand:ImageView
+        var history:ImageView
         var lisview:RecyclerView
 
 
@@ -34,6 +30,7 @@ class OnlineAdapter(val context: Context , var onClickLIstener: OnClickLIstener,
             phone= view.findViewById(R.id.online_phone)
             profile= view.findViewById(R.id.online_profile)
             expand= view.findViewById(R.id.online_expend)
+            history= view.findViewById(R.id.online_user_history)
             edit= view.findViewById(R.id.online_edit)
             lisview= view.findViewById(R.id.online_user_recyclerview)
         }

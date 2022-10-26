@@ -10,17 +10,16 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.m.ismayilov.timetracker.adapter.KatagoryRecycleAdapter
 import com.example.m.ismayilov.timetracker.databinding.FragmentOnlineBinding
+import com.example.m.ismayilov.timetracker.onClick.OnClickLIstener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-class Online : Fragment()  , OnClickLIstener{
+class Online : Fragment()  , OnClickLIstener {
 
     lateinit var binding:FragmentOnlineBinding
     lateinit var view: FrameLayout
@@ -48,9 +47,7 @@ class Online : Fragment()  , OnClickLIstener{
                     try{
                         val value = i.getValue(Users::class.java)
                         if (value != null) {
-                            if(!value.permission) continue
-                            val users = Users(value.name , value.phone , "" , value.online ,value.permission , value.admin , )
-                            list.add(users)
+                            list.add(value)
 
                         } else {
                             Toast.makeText(requireContext(), "nullc", Toast.LENGTH_SHORT).show()

@@ -1,10 +1,6 @@
 package com.example.m.ismayilov.timetracker
 
 import android.annotation.SuppressLint
-import android.app.Dialog
-import android.content.Context
-import android.content.SharedPreferences
-import android.icu.text.SimpleDateFormat
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,9 +17,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.m.ismayilov.timetracker.adapter.KatagoryRecycleAdapter
 import com.example.m.ismayilov.timetracker.adapter.RunProyektRecycleAdapter
 import com.example.m.ismayilov.timetracker.databinding.FragmentRunScreenBinding
+import com.example.m.ismayilov.timetracker.onClick.OnClickLIstener
 import com.example.m.ismayilov.timetracker.room.Katagory
 import com.example.m.ismayilov.timetracker.room.MyRoomDatabase
 import com.example.m.ismayilov.timetracker.room.RunHistory
+import com.example.m.ismayilov.timetracker.unkonown.ArtelDialog
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.launch

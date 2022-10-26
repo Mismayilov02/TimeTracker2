@@ -1,8 +1,6 @@
 package com.example.m.ismayilov.timetracker
 
-import android.content.ContentValues
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,9 +10,10 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.m.ismayilov.timetracker.databinding.FragmentPermissionBinding
+import com.example.m.ismayilov.timetracker.onClick.FirebaseUpdateOnClick
 import com.google.firebase.database.*
 
-class Permission : Fragment()  ,FirebaseUpdateOnClick {
+class Permission : Fragment()  , FirebaseUpdateOnClick {
 
     lateinit var binding: FragmentPermissionBinding
     lateinit var view: FrameLayout
@@ -45,8 +44,8 @@ class Permission : Fragment()  ,FirebaseUpdateOnClick {
                     try{
                         val value = i.getValue(Users::class.java)
                         if (value != null) {
-                            val users = Users(value.name , value.phone , "" , value.online ,value.permission , value.admin)
-                            list.add(users)
+//                            val users = Users(value.name , value.phone , "" , value.online ,value.permission , value.admin)
+//                            list.add(users)
 
                         } else {
                             Toast.makeText(requireContext(), "nullc", Toast.LENGTH_SHORT).show()

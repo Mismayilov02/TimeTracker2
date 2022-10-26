@@ -1,7 +1,6 @@
 package com.example.m.ismayilov.timetracker.open
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -15,7 +14,7 @@ import android.widget.FrameLayout
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.example.m.ismayilov.timetracker.Constant
+import com.example.m.ismayilov.timetracker.unkonown.Constant
 import com.example.m.ismayilov.timetracker.R
 import com.example.m.ismayilov.timetracker.SharedPreferencesManager
 import com.example.m.ismayilov.timetracker.databinding.FragmentSplashScreenBinding

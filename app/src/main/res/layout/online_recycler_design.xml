@@ -88,6 +88,17 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/online_name_text"
                 app:layout_constraintTop_toBottomOf="@+id/online_name_text" />
+
+            <ImageView
+                android:id="@+id/online_user_history"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/online_expend"
+                app:layout_constraintEnd_toStartOf="@+id/online_edit"
+                app:layout_constraintTop_toTopOf="@+id/online_expend"
+                app:srcCompat="@drawable/time_past"
+                app:tint="@color/icon_color" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 

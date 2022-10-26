@@ -97,7 +97,7 @@ class Login : Fragment() {
                     try{
                         val value = i.getValue(Users::class.java)
                         password = value!!.password
-                        admin = value.admin
+                        
                     }catch (e:Exception){
                         Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
                     }
@@ -133,6 +133,7 @@ class Login : Fragment() {
                         }
                     }catch (e:Exception){
                         Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "getChecInfo", Toast.LENGTH_SHORT).show()
                     }
                 }
 

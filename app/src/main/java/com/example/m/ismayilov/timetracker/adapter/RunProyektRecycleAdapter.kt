@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.m.ismayilov.timetracker.OnClickLIstener
+import com.example.m.ismayilov.timetracker.onClick.OnClickLIstener
 import com.example.m.ismayilov.timetracker.R
 import com.example.m.ismayilov.timetracker.room.RunHistory
 import java.util.*
@@ -54,6 +54,8 @@ class RunProyektRecycleAdapter(val context: Context, var proyekts: MutableList<R
         holder.timeText.text = ("${timeToString(saat)}:${timeToString(dakika)}:${timeToString(saniye)}")
         timeTextList.add(holder.timeText)
 
+
+
         while (handlarTrue){
             var handler: Handler = Handler()
             var runnable: Runnable? = null
@@ -61,15 +63,10 @@ class RunProyektRecycleAdapter(val context: Context, var proyekts: MutableList<R
             handler.postDelayed(Runnable {
                 handler.postDelayed(runnable!!, delay.toLong())
                 changeTime()
-
             }.also { runnable = it }, delay.toLong())
 
             handlarTrue = false
         }
-//        holder.btn.setOnClickListener {
-//            onClickLIstener.onClickListenerId(proyekts.get(position).my_id)
-//        }
-
 
     }
 

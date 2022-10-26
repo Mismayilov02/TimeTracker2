@@ -1,4 +1,4 @@
-package com.example.m.ismayilov.timetracker
+package com.example.m.ismayilov.timetracker.onClick
 
 interface OnClickLIstener {
     fun onClickListenerId(id:Int , play:Boolean)

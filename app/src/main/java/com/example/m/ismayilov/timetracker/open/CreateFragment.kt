@@ -1,7 +1,6 @@
 package com.example.m.ismayilov.timetracker.open
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,12 +8,9 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
-import com.example.m.ismayilov.timetracker.ArtelDialog
-import com.example.m.ismayilov.timetracker.BaseActivity
-import com.example.m.ismayilov.timetracker.SharedPreferencesManager
-import com.example.m.ismayilov.timetracker.Users
+import com.example.m.ismayilov.timetracker.*
+import com.example.m.ismayilov.timetracker.unkonown.ArtelDialog
 import com.example.m.ismayilov.timetracker.databinding.FragmentCreateBinding
 import com.google.firebase.database.*
 
@@ -82,17 +78,25 @@ class CreateFragment : Fragment() {
     }
 
     fun sendValuesFirebase(){
-        FirebaseDatabase.getInstance().getReference("users").child( binding.createPhone.text.toString()).setValue(
-            Users(
-                binding.createName.text.toString(),
-                binding.createPhone.text.toString(),
-                binding.createPassword.text.toString(),
-                false,false , false
+
+        try{
+            FirebaseDatabase.getInstance().getReference("users")
+                .child(binding.createPhone.text.toString()).setValue(
+                Users(
+                    binding.createName.text.toString(),
+                    binding.createPhone.text.toString(),
+                    binding.createPassword.text.toString(),
+                    false, false, null, null
+
+                )
             )
-        )
-        sharedPreferencesManager.setValue("create" , true)
-        val direction = CreateFragmentDirections.actionCreateFragmentToLogin(true)
-        findNavController().navigate(direction)
+            sharedPreferencesManager.setValue("create", true)
+            val direction = CreateFragmentDirections.actionCreateFragmentToLogin(true)
+            findNavController().navigate(direction)
+        }catch (e:Exception){
+            Toast.makeText(requireContext() , e.message , Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext() , "e.message" , Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun chechkFirebaseInformation(number:String) {

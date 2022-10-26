@@ -7,9 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.navigation.fragment.findNavController
-import com.example.m.ismayilov.timetracker.databinding.FragmentAddProekBinding
 import com.example.m.ismayilov.timetracker.databinding.FragmentAddUserBinding
-import com.example.m.ismayilov.timetracker.open.CreateFragmentDirections
+import com.example.m.ismayilov.timetracker.unkonown.ArtelDialog
 import com.google.firebase.database.FirebaseDatabase
 
 class AddUser : Fragment() {
@@ -55,13 +54,15 @@ class AddUser : Fragment() {
     }
 
     fun sendValuesFirebase(){
+
         FirebaseDatabase.getInstance().getReference("users").child( binding.addPhone.text.toString()).setValue(
             Users(
                 binding.addName.text.toString(),
                 binding.addPhone.text.toString(),
                 binding.addPassword.text.toString(),
-                false,true , false
-            )
+                false,true ,
+               null,null
+        )
         )
         findNavController().navigate(R.id.action_addUser_to_runScreen2)
     }
