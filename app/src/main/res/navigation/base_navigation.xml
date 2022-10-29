@@ -29,6 +29,10 @@
             android:name="to_online"
             app:argType="boolean"
             android:defaultValue="false" />
+        <argument
+            android:name="phone"
+            app:argType="string"
+            android:defaultValue=" " />
     </fragment>
     <fragment
         android:id="@+id/runScreen2"
@@ -65,6 +69,15 @@
         tools:layout="@layout/fragment_add_user" >
         <action
             android:id="@+id/action_addUser_to_runScreen2"
+            app:destination="@id/runScreen2" />
+    </fragment>
+    <fragment
+        android:id="@+id/splashScreen2"
+        android:name="com.example.m.ismayilov.timetracker.SplashScreen"
+        android:label="fragment_splash_screen"
+        tools:layout="@layout/fragment_splash_screen" >
+        <action
+            android:id="@+id/action_splashScreen2_to_runScreen2"
             app:destination="@id/runScreen2" />
     </fragment>
 </navigation>

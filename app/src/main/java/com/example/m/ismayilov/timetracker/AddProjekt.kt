@@ -18,6 +18,8 @@ import com.example.m.ismayilov.timetracker.databinding.FragmentAddProekBinding
 import com.example.m.ismayilov.timetracker.room.Katagory
 import com.example.m.ismayilov.timetracker.room.MyRoomDatabase
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.launch
 
 class AddProek : Fragment() {
@@ -26,6 +28,8 @@ class AddProek : Fragment() {
     lateinit var binding: FragmentAddProekBinding
     var view: FrameLayout? = null
     var defaultColor = "#ED1515"
+    var fireBaseDatabase: FirebaseDatabase? = null
+    var firebase: DatabaseReference? = null
     lateinit var recycleAdapte: ColorRecycleAdapte
     var historyAll: MutableList<String>? =
         mutableListOf("#ED1515", "#D85723", "#E1AF00", "#4A9F00", "#0FDFCA" , "#FF9900" , "#FFA5A5" , "#00FFF0" , "#8E15ED" , "#ED15B1" , "#00FF29")
@@ -38,6 +42,7 @@ class AddProek : Fragment() {
         binding = FragmentAddProekBinding.inflate(inflater, container, false)
         view = binding.root
         myRoomDatabase = MyRoomDatabase.getDatabase(requireContext())
+        fireBaseDatabase = FirebaseDatabase.getInstance()
 
 
         val args: AddProekArgs by navArgs()
@@ -64,7 +69,7 @@ class AddProek : Fragment() {
            if (binding.addProektName.text.isEmpty()){
                setSnakebarMessage(args.katagoryOrProject , it)
            }else{
-               saveDatabase(args.katagoryOrProject ,args.toOnline, args.katagoryName)
+               saveDatabase(args.katagoryOrProject ,args.toOnline, args.katagoryName , args.phone)
            }
         }
 
@@ -92,7 +97,7 @@ class AddProek : Fragment() {
 
     }
 
-    fun saveDatabase(katagoryOrProyek: Boolean  , toOnline:Boolean , katagoryName :String) {
+    fun saveDatabase(katagoryOrProyek: Boolean  , toOnline:Boolean , katagoryName :String , phone:String) {
         var katagory:Katagory
         lifecycleScope.launch {
             if (!katagoryOrProyek) {
@@ -101,14 +106,13 @@ class AddProek : Fragment() {
                 findNavController().navigate(R.id.action_addProek2_to_runScreen2)
 
             }else if (toOnline){
-                saveFirebaseUser()
+                saveFirebaseUser(phone ,  binding.addProektName.text.toString() , defaultColor)
             }
             else {
                  katagory = Katagory(0, defaultColor , katagoryName , binding.addProektName.text.toString(),false  , false)
                 myRoomDatabase.katagoryDao().writeKatagoryr(katagory)
                 findNavController().navigate(R.id.action_addProek2_to_runScreen2)
             }
-
 
         }
     }
@@ -122,7 +126,12 @@ class AddProek : Fragment() {
 
         }
 
-    fun saveFirebaseUser(){
+    fun saveFirebaseUser(phone:String ,projectName: String , colorCode:String ){
+        var project =  HashMap<String, String>()
+        project.put("projectName" , projectName)
+        project.put("colorCode" , colorCode)
+        FirebaseDatabase.getInstance().getReference("users").child(phone).child("project").child(projectName)
+            .setValue(project)
         findNavController().navigate(R.id.action_addProek2_to_onlinenavhost)
     }
 

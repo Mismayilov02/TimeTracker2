@@ -1,4 +1,4 @@
-package com.example.m.ismayilov.timetracker.open
+package com.example.m.ismayilov.timetracker
 
 import android.annotation.SuppressLint
 import android.os.Build
@@ -15,8 +15,6 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.m.ismayilov.timetracker.unkonown.Constant
-import com.example.m.ismayilov.timetracker.R
-import com.example.m.ismayilov.timetracker.SharedPreferencesManager
 import com.example.m.ismayilov.timetracker.databinding.FragmentSplashScreenBinding
 import java.util.*
 
@@ -50,15 +48,8 @@ class SplashScreen : Fragment() {
     }
 
     fun sellectSplashToId(){
-//        if(sharedPreferencesManager.getBoolean("login" , false)!!){
-//            startActivity(Intent(requireContext() , BaseActivity::class.java))
+            findNavController().navigate(R.id.action_splashScreen2_to_runScreen2)
 
-//        }else if (sharedPreferencesManager.getBoolean("create" , false)!!){
-//            val direction = SplashScreenDirections.navigationSplastTologin(true)
-//            findNavController().navigate(direction)
-//        }else{
-            findNavController().navigate(R.id.action_splashScreen_to_createFragment)
-//        }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)

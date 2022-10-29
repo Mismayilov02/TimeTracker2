@@ -114,8 +114,8 @@
                 android:inputType="phone"
                 android:maxLength="10"
                 android:maxLines="1"
-                android:textColor="@color/open_color"
-                android:textColorHint="@color/open_color"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
                 tools:ignore="InvalidId" />
         </com.google.android.material.textfield.TextInputLayout>
 

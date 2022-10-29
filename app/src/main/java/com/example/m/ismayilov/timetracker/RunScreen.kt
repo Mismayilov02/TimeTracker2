@@ -36,6 +36,8 @@ class RunScreen : Fragment() , OnClickLIstener {
     lateinit var runProyektRecycleAdapter: RunProyektRecycleAdapter
     lateinit var katagory: MutableList<Katagory>
     lateinit var runKatagoryHistory: MutableList<RunHistory>
+    var katagoryRun :RunHistory? = null
+    lateinit var time: String
     lateinit var myRoomDatabase: MyRoomDatabase
     var fireBaseDatabase: FirebaseDatabase? = null
     var firebase: DatabaseReference? = null
@@ -94,36 +96,30 @@ class RunScreen : Fragment() , OnClickLIstener {
                 ArtelDialog().getMaxDialog(requireContext())
             }
 
-
         }
     }
 
 
     @SuppressLint("NewApi")
     fun createrunProject(katagory: Katagory){
-        val time  =sharedPreferencesManager.getString("todate" , "1111.11.11")
+        time = sharedPreferencesManager.getString("todate" , "1111.11.11")!!
         lifecycleScope.launch {
-            lateinit var runUpdate:RunHistory
-            val katagoryRun = myRoomDatabase.runDao().readDalyTrue(katagory.id ,time!! , true)
+            katagoryRun = myRoomDatabase.runDao().readDalyTrue(katagory.katagory_name , katagory.project_name )
 
             if (katagoryRun != null){
-
-                if(katagoryRun.play){
-                   val eguals = (Math.abs(Date().time - katagoryRun.start_date)) + katagoryRun.daily_total
-                   runUpdate = RunHistory(katagoryRun.id , katagory.id, katagoryRun.color_code ,katagoryRun.katagory_name , katagoryRun.project_name , katagoryRun.start_date ,Date().time,
-                        eguals,  katagoryRun.date,false  )
+                if(time.equals(katagoryRun!!.date)){
+                    katagoryRunUpdatePause(katagoryRun!!.play, false, katagory)
+                }else {
+                    if (katagoryRun!!.play){ katagoryRunUpdatePause(true, false, katagory) }
+                    else{
+                        katagoryRunUpdatePause(false , true , katagory)
+                    }
                 }
-                else{
-                    runUpdate = RunHistory(katagoryRun.id , katagory.id ,katagoryRun.color_code ,katagoryRun.katagory_name , katagoryRun.project_name , Date().time ,katagoryRun.end_date,
-                        katagoryRun.daily_total, katagoryRun.date ,true  )
-                }
-                    runUpdate.id = katagoryRun.id
-                    myRoomDatabase.runDao().updateRun(runUpdate)
 
             }else{
-                myRoomDatabase.runDao().inertRunHistory(RunHistory(0 , katagory.id,katagory.color_code ,katagory.katagory_name , katagory.project_name , Date().time ,0,
-                   0, time!! ,true  ))
+                katagoryRunUpdatePause(false , true , katagory)
             }
+
             runKatagoryHistory = myRoomDatabase.runDao().readAllKatagory(true)
             runProyektRecycleAdapter.update(runKatagoryHistory)
             setDesignRunIconView(runKatagoryHistory.size)
@@ -133,23 +129,44 @@ class RunScreen : Fragment() , OnClickLIstener {
 
     }
 
-    fun setAdapterDefault(){
+    suspend fun katagoryRunUpdatePause(play: Boolean, create:Boolean, katagory: Katagory){
+        lateinit var runUpdate:RunHistory
+        if(create){
+            myRoomDatabase.runDao().inertRunHistory(RunHistory(0 , katagory.id,katagory.color_code ,katagory.katagory_name , katagory.project_name , Date().time ,0,
+                0, time!! ,true  ))
+        }else{
+            if(play){
+                val eguals = (Math.abs(Date().time - katagoryRun!!.start_date)) + katagoryRun!!.daily_total
+                runUpdate = RunHistory(katagoryRun!!.id , katagory.id, katagoryRun!!.color_code ,katagoryRun!!.katagory_name , katagoryRun!!.project_name , katagoryRun!!.start_date ,Date().time,
+                    eguals,  katagoryRun!!.date,false  )
+            }else{
+                runUpdate = RunHistory(katagoryRun!!.id , katagory.id ,katagoryRun!!.color_code ,katagoryRun!!.katagory_name , katagoryRun!!.project_name , Date().time ,katagoryRun!!.end_date,
+                    katagoryRun!!.daily_total, katagoryRun!!.date ,true  )
+            }
+            runUpdate.id = katagoryRun!!.id
+            myRoomDatabase.runDao().updateRun(runUpdate)
+        }
+
+    }
+
+
+    fun setAdapterDefault() {
         lifecycleScope.launch {
             katagory = myRoomDatabase.katagoryDao().readNullKatagory("null")
-            if(katagory.size!=0){
+            if (katagory.size != 0) {
                 binding.runscreenEmptyText.isVisible = false
             }
-            for(i in katagory){
-                val hasmapKatagory = myRoomDatabase.katagoryDao().readKatagory(i.katagory_name )
-                hashMap.put(i.katagory_name ,hasmapKatagory )
+            for (i in katagory) {
+                val hasmapKatagory = myRoomDatabase.katagoryDao().readKatagory(i.katagory_name)
+                hashMap.put(i.katagory_name, hasmapKatagory)
             }
-            katagoryRecycleAdapter = KatagoryRecycleAdapter(requireContext() , katagory ,hashMap , this@RunScreen)
+            katagoryRecycleAdapter =
+                KatagoryRecycleAdapter(requireContext(), katagory, hashMap, this@RunScreen)
             binding.runAllProyekt.setHasFixedSize(true)
             binding.runAllProyekt.setLayoutManager(GridLayoutManager(activity, 1))
             binding.runAllProyekt.adapter = katagoryRecycleAdapter
         }
     }
-
     fun setAdapterRun(){
         lifecycleScope.launch {
             runKatagoryHistory = myRoomDatabase.runDao().readAllKatagory(true)

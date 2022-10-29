@@ -40,7 +40,7 @@ class PermissionAdapter(val context: Context, val list: MutableList<Users>   , v
         }
 
         holder.no.setOnClickListener {
-            firebaseUpdateOnClick.onClickListenerId(position , true)
+            firebaseUpdateOnClick.onClickListenerId(position , false)
         }
     }
 

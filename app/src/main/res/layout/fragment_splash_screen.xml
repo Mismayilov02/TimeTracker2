@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/backround_gradient"
-    tools:context=".open.SplashScreen">
+    tools:context=".SplashScreen">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

@@ -37,9 +37,7 @@ class Online : Fragment()  , OnClickLIstener {
         var fireBaseDatabase  = FirebaseDatabase.getInstance()
         var firebase = fireBaseDatabase.getReference("users/")
 
-        var sorgu  = firebase.orderByChild("admin").equalTo(false)
-
-        sorgu.addValueEventListener(object: ValueEventListener {
+        firebase.addValueEventListener(object: ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 var list = mutableListOf<Users>()
@@ -85,8 +83,8 @@ class Online : Fragment()  , OnClickLIstener {
 
     }
 
-    override fun onClickListenerAction(katagoryName: String) {
-        val direction = OnlineDirections.actionOnlinenavhostToAddProek2(true, katagoryName, true)
+    override fun onClickListenerAction(phone: String) {
+        val direction = OnlineDirections.actionOnlinenavhostToAddProek2(true, "NSP", true , phone)
         findNavController().navigate(direction)
     }
 

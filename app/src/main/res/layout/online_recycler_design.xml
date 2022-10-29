@@ -25,7 +25,10 @@
                 android:id="@+id/online_user_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
                 android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/online_phone" />
 
             <ImageView
@@ -82,10 +85,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:layout_marginBottom="5dp"
+                android:paddingBottom="5dp"
                 android:text="TextView"
                 android:textColor="@color/icon_color"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/online_name_text"
                 app:layout_constraintTop_toBottomOf="@+id/online_name_text" />
 

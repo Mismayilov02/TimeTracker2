@@ -40,20 +40,20 @@ class ArtelDialog {
 
     }
 
-    fun getHaveDialog(context: Context  , v:View) {
-        val dialog = Dialog(context)
-        dialog.setContentView(R.layout.have_user)
-        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.show()
-        dialog.findViewById<ImageView>(R.id.have_dismis_btn).setOnClickListener {
-            dialog.dismiss()
-        }
-        dialog.findViewById<Button>(R.id.have_login_btn).setOnClickListener {
-            Navigation.findNavController(v).navigate(R.id.action_createFragment_to_login)
-            dialog.dismiss()
-        }
-
-    }
+//    fun getHaveDialog(context: Context  , v:View) {
+//        val dialog = Dialog(context)
+//        dialog.setContentView(R.layout.have_user)
+//        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+//        dialog.show()
+//        dialog.findViewById<ImageView>(R.id.have_dismis_btn).setOnClickListener {
+//            dialog.dismiss()
+//        }
+//        dialog.findViewById<Button>(R.id.have_login_btn).setOnClickListener {
+//            Navigation.findNavController(v).navigate(R.id.action_createFragment_to_login)
+//            dialog.dismiss()
+//        }
+//
+//    }
 
     fun isConnected(context: Context): Boolean {
         val connectivityManager =

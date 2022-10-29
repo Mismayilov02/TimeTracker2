@@ -36,7 +36,6 @@ class Permission : Fragment()  , FirebaseUpdateOnClick {
         var sorgu  = firebase!!.orderByChild("permission").equalTo(false)
 
         sorgu.addValueEventListener(object: ValueEventListener {
-
             override fun onDataChange(snapshot: DataSnapshot) {
 
                  list = mutableListOf<Users>()
@@ -45,7 +44,7 @@ class Permission : Fragment()  , FirebaseUpdateOnClick {
                         val value = i.getValue(Users::class.java)
                         if (value != null) {
 //                            val users = Users(value.name , value.phone , "" , value.online ,value.permission , value.admin)
-//                            list.add(users)
+                            list.add(value)
 
                         } else {
                             Toast.makeText(requireContext(), "nullc", Toast.LENGTH_SHORT).show()
@@ -54,9 +53,7 @@ class Permission : Fragment()  , FirebaseUpdateOnClick {
                         Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
                     }
                 }
-
                 setAdapter(list)
-
             }
             override fun onCancelled(error: DatabaseError) {
             }

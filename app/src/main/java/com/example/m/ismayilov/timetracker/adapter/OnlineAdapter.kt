@@ -1,6 +1,7 @@
 package com.example.m.ismayilov.timetracker
 
 import android.content.Context
+import android.opengl.Visibility
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +9,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.m.ismayilov.timetracker.adapter.OnlineUserItemAdapter
 import com.example.m.ismayilov.timetracker.onClick.OnClickLIstener
 
 class OnlineAdapter(val context: Context, var onClickLIstener: OnClickLIstener, val list: MutableList<Users>,  /*val userProyekt: HashMap<String , MutableList<UserDefaultProject>>*/ ):RecyclerView.Adapter<OnlineAdapter.cardViewDesign>() {
@@ -22,7 +25,6 @@ class OnlineAdapter(val context: Context, var onClickLIstener: OnClickLIstener, 
         var expand:ImageView
         var history:ImageView
         var lisview:RecyclerView
-
 
 
         init {
@@ -50,6 +52,18 @@ class OnlineAdapter(val context: Context, var onClickLIstener: OnClickLIstener, 
         holder.name.text = list.get(position).name
         holder.phone.text = list.get(position).phone
 
+
+        if (list.get(position).project != null){
+            val projeList = mutableListOf<UserDeaultProjectName>()
+            for ((key, value) in list.get(position).project!!) {
+                projeList.add(UserDeaultProjectName(key, value.colorCode))
+            }
+            val adapter = OnlineUserItemAdapter(context, projeList)
+            holder.lisview.setHasFixedSize(true)
+            holder.lisview.setLayoutManager(GridLayoutManager(context, 1))
+            holder.lisview.adapter = adapter
+        }
+
         holder.expand.setOnClickListener {
             setVisibleList(holder , position)
         }
@@ -68,12 +82,12 @@ class OnlineAdapter(val context: Context, var onClickLIstener: OnClickLIstener, 
     fun setVisibleList(holder: OnlineAdapter.cardViewDesign, position: Int){
         if(showList.get(position) == true){
             showList.set(position , false)
-            holder.lisview.isVisible = false
+            holder.lisview.visibility = View.GONE
             holder.expand.setImageResource(R.drawable.angle_down)
 
         }else{
             showList.set(position , true)
-            holder.lisview.isVisible = true
+            holder.lisview.visibility = View.VISIBLE
             holder.expand.setImageResource(R.drawable.up)
         }
     }
