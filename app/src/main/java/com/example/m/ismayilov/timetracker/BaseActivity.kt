@@ -33,10 +33,6 @@ class BaseActivity : AppCompatActivity() {
 
         menu.findItem(R.id.time).setTitle(sharedPreferencesManager.getString("todate" , "1111.11.11"))
 
-        if (!sharedPreferencesManager.getBoolean("admin" , true)!!){
-            menu.findItem(R.id.permission).isVisible = false
-            menu.findItem(R.id.onlinenavhost).isVisible = false
-        }
 
 
 

@@ -20,8 +20,8 @@ interface RunDao {
     @Query("select * from run_history where project_name = null and play = :play ")
     suspend fun readNullKatagory(play :Boolean) : MutableList<RunHistory>
 
-    @Query("select * from run_history where my_id=:myId and date =:toDate or play=:play")
-    suspend fun readDalyTrue(myId:Int, toDate:String , play:Boolean) : RunHistory
+    @Query("select * from run_history where katagory_name=:katagoryName and project_name=:projectName limit 1")
+    suspend fun readDalyTrue(katagoryName:String , projectName:String) : RunHistory
 
     @Query("select * from run_history where date=:date ")
     suspend fun readTime(date:String) :MutableList<RunHistory>

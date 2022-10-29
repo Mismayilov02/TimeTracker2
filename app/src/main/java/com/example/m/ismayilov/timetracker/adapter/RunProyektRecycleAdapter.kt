@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.m.ismayilov.timetracker.OnClickLIstener
+import com.example.m.ismayilov.timetracker.onClick.OnClickLIstener
 import com.example.m.ismayilov.timetracker.R
 import com.example.m.ismayilov.timetracker.room.RunHistory
 import java.util.*

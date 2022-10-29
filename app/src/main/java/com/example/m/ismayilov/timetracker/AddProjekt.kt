@@ -41,7 +41,7 @@ class AddProek : Fragment() {
 
 
         val args: AddProekArgs by navArgs()
-        if (args.katagoryOrProject || args.toOnline) {
+        if (args.katagoryOrProject) {
             binding.addProektName.setHint("Proyek adi")
         }
 
@@ -64,7 +64,7 @@ class AddProek : Fragment() {
            if (binding.addProektName.text.isEmpty()){
                setSnakebarMessage(args.katagoryOrProject , it)
            }else{
-               saveDatabase(args.katagoryOrProject ,args.toOnline, args.katagoryName)
+               saveDatabase(args.katagoryOrProject , args.katagoryName)
            }
         }
 
@@ -92,7 +92,7 @@ class AddProek : Fragment() {
 
     }
 
-    fun saveDatabase(katagoryOrProyek: Boolean  , toOnline:Boolean , katagoryName :String) {
+    fun saveDatabase(katagoryOrProyek: Boolean  , katagoryName :String) {
         var katagory:Katagory
         lifecycleScope.launch {
             if (!katagoryOrProyek) {
@@ -100,8 +100,6 @@ class AddProek : Fragment() {
                 myRoomDatabase.katagoryDao().writeKatagoryr(katagory)
                 findNavController().navigate(R.id.action_addProek2_to_runScreen2)
 
-            }else if (toOnline){
-                saveFirebaseUser()
             }
             else {
                  katagory = Katagory(0, defaultColor , katagoryName , binding.addProektName.text.toString(),false  , false)
@@ -122,8 +120,8 @@ class AddProek : Fragment() {
 
         }
 
-    fun saveFirebaseUser(){
-        findNavController().navigate(R.id.action_addProek2_to_onlinenavhost)
-    }
+//    fun saveFirebaseUser(){
+//        findNavController().navigate(R.id.action_addProek2_to_onlinenavhost)
+//    }
 
 }

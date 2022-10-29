@@ -15,6 +15,7 @@ import android.widget.FrameLayout
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.m.ismayilov.timetracker.BaseActivity
 import com.example.m.ismayilov.timetracker.Constant
 import com.example.m.ismayilov.timetracker.R
 import com.example.m.ismayilov.timetracker.SharedPreferencesManager
@@ -50,16 +51,16 @@ class SplashScreen : Fragment() {
         return view
     }
 
-    fun sellectSplashToId(){
-//        if(sharedPreferencesManager.getBoolean("login" , false)!!){
-//            startActivity(Intent(requireContext() , BaseActivity::class.java))
+    fun sellectSplashToId() {
+        if (sharedPreferencesManager.getBoolean("login", false)!!) {
+            startActivity(Intent(requireContext(), BaseActivity::class.java))
 
-//        }else if (sharedPreferencesManager.getBoolean("create" , false)!!){
-//            val direction = SplashScreenDirections.navigationSplastTologin(true)
-//            findNavController().navigate(direction)
-//        }else{
+        } else if (sharedPreferencesManager.getBoolean("create", false)!!) {
+            val direction = SplashScreenDirections.navigationSplastTologin(true)
+            findNavController().navigate(direction)
+        } else {
             findNavController().navigate(R.id.action_splashScreen_to_createFragment)
-//        }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)

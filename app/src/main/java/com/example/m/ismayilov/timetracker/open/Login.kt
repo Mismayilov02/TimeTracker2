@@ -32,7 +32,7 @@ class Login : Fragment() {
 
     lateinit var binding: FragmentLoginBinding
     var password:String = ""
-    var admin = false
+    var btnClisck = false
     var view :FrameLayout? = null
     var fireBaseDatabase: FirebaseDatabase? = null
     var firebase: DatabaseReference? = null
@@ -80,6 +80,7 @@ class Login : Fragment() {
         }
 
         if (isEmpty){
+            btnClisck = true
             sharedPreferencesManager.setValue("phone" , binding.loginPhone.text.toString())
             login()
         }
@@ -93,22 +94,24 @@ class Login : Fragment() {
         sorgu.addValueEventListener(object:ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
 
-                for (i in snapshot.children){
-                    try{
-                        val value = i.getValue(Users::class.java)
-                        password = value!!.password
-                        admin = value.admin
-                    }catch (e:Exception){
-                        Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
+                if (btnClisck){
+                    for (i in snapshot.children) {
+                        try {
+                            val value = i.getValue(Users::class.java)
+                            password = value!!.password
+                        } catch (e: Exception) {
+                            Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
+                        }
                     }
-                }
-                if (snapshot.exists() && password.equals(binding.loginPassword.text.toString())){
-                    if (admin){ sharedPreferencesManager.setValue("admin", true) }
-                    sharedPreferencesManager.setValue("login" , true)
-                    startActivity(Intent(requireContext() , BaseActivity::class.java))
-                    requireActivity().finish();
-                }else{
-                    Snackbar.make(view!!, "Numara ve ya Sifre Yalnis" , Snackbar.LENGTH_SHORT).show()
+                    if (snapshot.exists() && password.equals(binding.loginPassword.text.toString())) {
+                        sharedPreferencesManager.setValue("login", true)
+                        startActivity(Intent(requireContext(), BaseActivity::class.java))
+                        activity!!.finish()
+                    } else {
+                        Snackbar.make(view!!, "Numara ve ya Sifre Yalnis", Snackbar.LENGTH_SHORT)
+                            .show()
+                    }
+                    btnClisck = false
                 }
             }
             override fun onCancelled(error: DatabaseError) {

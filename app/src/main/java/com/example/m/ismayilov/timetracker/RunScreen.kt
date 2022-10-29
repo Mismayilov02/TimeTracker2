@@ -1,16 +1,13 @@
 package com.example.m.ismayilov.timetracker
 
 import android.annotation.SuppressLint
-import android.app.Dialog
-import android.content.Context
-import android.content.SharedPreferences
-import android.icu.text.SimpleDateFormat
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -21,6 +18,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.m.ismayilov.timetracker.adapter.KatagoryRecycleAdapter
 import com.example.m.ismayilov.timetracker.adapter.RunProyektRecycleAdapter
 import com.example.m.ismayilov.timetracker.databinding.FragmentRunScreenBinding
+import com.example.m.ismayilov.timetracker.onClick.OnClickLIstener
 import com.example.m.ismayilov.timetracker.room.Katagory
 import com.example.m.ismayilov.timetracker.room.MyRoomDatabase
 import com.example.m.ismayilov.timetracker.room.RunHistory
@@ -34,6 +32,7 @@ class RunScreen : Fragment() , OnClickLIstener {
    var view: FrameLayout? = null
     private val serverKey = "BDzjOJCrzrb1AlylmsS4p6HmZmA7EQbVOQFqbZSNvZp0UPafDGP8ya5nUBO29FMgvC8VzqE6VBy8wbnrGvO9z5M"
     lateinit var binding: FragmentRunScreenBinding
+    var katagoryRun :RunHistory? = null
     lateinit var katagoryRecycleAdapter: KatagoryRecycleAdapter
     lateinit var runProyektRecycleAdapter: RunProyektRecycleAdapter
     lateinit var katagory: MutableList<Katagory>
@@ -41,6 +40,7 @@ class RunScreen : Fragment() , OnClickLIstener {
     lateinit var myRoomDatabase: MyRoomDatabase
     var fireBaseDatabase: FirebaseDatabase? = null
     var firebase: DatabaseReference? = null
+    lateinit var time: String
     var hashMap = HashMap<String , MutableList<Katagory>>()
     @RequiresApi(Build.VERSION_CODES.N)
     lateinit var sharedPreferencesManager: SharedPreferencesManager
@@ -103,28 +103,22 @@ class RunScreen : Fragment() , OnClickLIstener {
 
     @SuppressLint("NewApi")
     fun createrunProject(katagory: Katagory){
-        val time  =sharedPreferencesManager.getString("todate" , "1111.11.11")
+        time = sharedPreferencesManager.getString("todate" , "1111.11.11")!!
         lifecycleScope.launch {
-            lateinit var runUpdate:RunHistory
-            val katagoryRun = myRoomDatabase.runDao().readDalyTrue(katagory.id ,time!! , true)
+           katagoryRun = myRoomDatabase.runDao().readDalyTrue(katagory.katagory_name , katagory.project_name )
 
             if (katagoryRun != null){
-
-                if(katagoryRun.play){
-                   val eguals = (Math.abs(Date().time - katagoryRun.start_date)) + katagoryRun.daily_total
-                   runUpdate = RunHistory(katagoryRun.id , katagory.id, katagoryRun.color_code ,katagoryRun.katagory_name , katagoryRun.project_name , katagoryRun.start_date ,Date().time,
-                        eguals,  katagoryRun.date,false  )
+                if(time.equals(katagoryRun!!.date)){
+                        katagoryRunUpdatePause(katagoryRun!!.play, false, katagory)
+                }else {
+                    if (katagoryRun!!.play){ katagoryRunUpdatePause(true, false, katagory) }
+                    else{
+                        katagoryRunUpdatePause(false , true , katagory)
+                    }
                 }
-                else{
-                    runUpdate = RunHistory(katagoryRun.id , katagory.id ,katagoryRun.color_code ,katagoryRun.katagory_name , katagoryRun.project_name , Date().time ,katagoryRun.end_date,
-                        katagoryRun.daily_total, katagoryRun.date ,true  )
-                }
-                    runUpdate.id = katagoryRun.id
-                    myRoomDatabase.runDao().updateRun(runUpdate)
 
             }else{
-                myRoomDatabase.runDao().inertRunHistory(RunHistory(0 , katagory.id,katagory.color_code ,katagory.katagory_name , katagory.project_name , Date().time ,0,
-                   0, time!! ,true  ))
+                katagoryRunUpdatePause(false , true , katagory)
             }
             runKatagoryHistory = myRoomDatabase.runDao().readAllKatagory(true)
             runProyektRecycleAdapter.update(runKatagoryHistory)
@@ -132,6 +126,28 @@ class RunScreen : Fragment() , OnClickLIstener {
             checkIsOnline(runKatagoryHistory.size)
 
         }
+
+    }
+
+    suspend fun katagoryRunUpdatePause(play: Boolean, create:Boolean, katagory: Katagory){
+        lateinit var runUpdate:RunHistory
+        if(create){
+            myRoomDatabase.runDao().inertRunHistory(RunHistory(0 , katagory.id,katagory.color_code ,katagory.katagory_name , katagory.project_name , Date().time ,0,
+                0, time!! ,true  ))
+        }else{
+            if(play){
+                val eguals = (Math.abs(Date().time - katagoryRun!!.start_date)) + katagoryRun!!.daily_total
+                runUpdate = RunHistory(katagoryRun!!.id , katagory.id, katagoryRun!!.color_code ,katagoryRun!!.katagory_name , katagoryRun!!.project_name , katagoryRun!!.start_date ,Date().time,
+                    eguals,  katagoryRun!!.date,false  )
+            }else{
+                runUpdate = RunHistory(katagoryRun!!.id , katagory.id ,katagoryRun!!.color_code ,katagoryRun!!.katagory_name , katagoryRun!!.project_name , Date().time ,katagoryRun!!.end_date,
+                    katagoryRun!!.daily_total, katagoryRun!!.date ,true  )
+            }
+            runUpdate.id = katagoryRun!!.id
+            myRoomDatabase.runDao().updateRun(runUpdate)
+        }
+
+
 
     }
 
@@ -196,12 +212,19 @@ class RunScreen : Fragment() , OnClickLIstener {
 
     @SuppressLint("NewApi")
     fun checkIsOnline(size: Int){
-//        var online = false
-//        if (size != 0)  online = true
-//        val updateValue = HashMap<String, Any>()
-//        updateValue["online"] = online
-//        firebase!!.child(sharedPreferencesManager.getString("phone" , "userDefaultPhone").toString()).updateChildren(updateValue)
-
+        try{
+            var online = false
+            if (size != 0) {
+                online = true
+            }
+            val updateValue = HashMap<String, Any>()
+            updateValue["online"] = online
+            firebase!!.child(
+                sharedPreferencesManager.getString("phone", "userDefaultPhone").toString()
+            ).updateChildren(updateValue)
+        }catch (e:Exception){
+            Toast.makeText(requireContext() , e.message , Toast.LENGTH_SHORT).show()
+        }
     }
 
 }

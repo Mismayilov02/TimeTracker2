@@ -11,7 +11,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.m.ismayilov.timetracker.OnClickLIstener
+import com.example.m.ismayilov.timetracker.onClick.OnClickLIstener
 import com.example.m.ismayilov.timetracker.R
 import com.example.m.ismayilov.timetracker.room.Katagory
 import com.example.m.ismayilov.timetracker.room.MyRoomDatabase

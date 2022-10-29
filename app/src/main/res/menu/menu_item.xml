@@ -15,22 +15,6 @@
             android:icon="@drawable/time_past"
             android:title="@string/history" />
 
-        <item
-            android:id="@+id/onlinenavhost"
-            android:icon="@drawable/group"
-            android:title="@string/users"
-            android:visibility="visible" />
-        <item
-            android:id="@+id/permission"
-            android:icon="@drawable/authorization"
-            android:title="@string/authorization"
-            android:visibility="visible" />
-        <item
-            android:id="@+id/addUser"
-            android:icon="@drawable/plus"
-            android:title="Add User"
-            android:visibility="visible" />
-
     </group>
 
 </menu>
