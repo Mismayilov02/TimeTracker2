@@ -258,7 +258,6 @@ class RunScreen : Fragment() , OnClickLIstener {
 
     @SuppressLint("NewApi")
     fun updateFireBaseHistory(runHistory: RunHistory){
-        val date = Constant().simpleToDay.parse(time)
         var project =  HashMap<String, Any>()
         project.put("play" , runHistory.play)
         project.put("colorCode" , runHistory.color_code)
@@ -268,7 +267,7 @@ class RunScreen : Fragment() , OnClickLIstener {
         project.put("endDate" , runHistory.end_date)
 
         FirebaseDatabase.getInstance().getReference("users").child(sharedPreferencesManager.getString("phone" , "defaulUserPhone")!!).child("history")
-            .child(date.toString()).child(runHistory.project_name)
+            .child(time).child(runHistory.project_name)
             .setValue(project)
     }
 
