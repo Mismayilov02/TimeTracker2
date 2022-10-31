@@ -71,6 +71,9 @@ class OnlineAdapter(val context: Context, var onClickLIstener: OnClickLIstener, 
         holder.edit.setOnClickListener {
             onClickLIstener.onClickListenerAction(holder.phone.text.toString())
         }
+        holder.history.setOnClickListener {
+            onClickLIstener.onClickSetExpendValues(list.get(position).phone.toInt() , false)
+        }
     }
 
     override fun getItemCount(): Int {

@@ -38,7 +38,6 @@ class OnlineUserItemAdapter(val context: Context, val list: MutableList<UserDeau
         holder.baseColor.setColorFilter(Color.parseColor(list.get(position).colorCode))
         holder.textView.text = list!!.get(position).projectName
 
-
     }
 
     override fun getItemCount(): Int {

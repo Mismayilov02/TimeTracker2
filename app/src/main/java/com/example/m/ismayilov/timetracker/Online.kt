@@ -88,8 +88,9 @@ class Online : Fragment()  , OnClickLIstener {
         findNavController().navigate(direction)
     }
 
-    override fun onClickSetExpendValues(id: Int, expend: Boolean) {
-        TODO("Not yet implemented")
+    override fun onClickSetExpendValues(phone: Int, expend: Boolean) {
+        val direction = OnlineDirections.actionOnlinenavhostToHistoryFragment(true, phone.toString())
+        findNavController().navigate(direction)
     }
 
 }
