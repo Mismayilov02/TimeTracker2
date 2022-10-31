@@ -43,10 +43,10 @@ class ProyektRecycleAdapter(val context: Context, val katagory: MutableList<Kata
         }
 
         holder.playBtn.setOnClickListener {
-            onClickLIstener.onClickListenerId(katagory.get(position).id , katagory.get(position).run)
+            onClickLIstener.onClickListenerId(katagory.get(position))
         }
         holder.textView.setOnClickListener {
-            onClickLIstener.onClickListenerId(katagory.get(position).id , katagory.get(position).run)
+            onClickLIstener.onClickListenerId(katagory.get(position))
         }
 
     }

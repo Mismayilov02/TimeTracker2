@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.m.ismayilov.timetracker.onClick.OnClickLIstener
 import com.example.m.ismayilov.timetracker.R
+import com.example.m.ismayilov.timetracker.SharedPreferencesManager
 import com.example.m.ismayilov.timetracker.room.Katagory
 import com.example.m.ismayilov.timetracker.room.MyRoomDatabase
 
@@ -20,6 +21,7 @@ class KatagoryRecycleAdapter(var context: Context, var katagory: MutableList<Kat
 
     var showList  = mutableListOf<Boolean>()
     var  myRoomDatabase = MyRoomDatabase.getDatabase(context)
+    val sharedPreferencesManager = SharedPreferencesManager(context)
 
     inner class proyektViewDesign(view :View):RecyclerView.ViewHolder(view){
         var color: CardView
@@ -47,6 +49,10 @@ class KatagoryRecycleAdapter(var context: Context, var katagory: MutableList<Kat
         showList.add(position , katagory.get(position).expend)
         holder.name.text = katagory.get(position).katagory_name
         holder.color.setCardBackgroundColor(Color.parseColor(katagory.get(position).color_code))
+
+        if (katagory.get(position).katagory_name.equals("NSP")){
+            holder.imageViewAdd.isVisible = false
+        }
         if (katagory.get(position).expend) {
             holder.listView.isVisible =true
             holder.show.setImageResource(R.drawable.up)
@@ -60,11 +66,19 @@ class KatagoryRecycleAdapter(var context: Context, var katagory: MutableList<Kat
             setVisibleList(holder , position)
         }
 
-        if(hashMap.get(katagory.get(position).katagory_name)!!.size !=0) {
-            var proyektRecycleAdapter = ProyektRecycleAdapter(context, hashMap.get(katagory.get(position).katagory_name) , onClickLIstener)
-            holder.listView.setHasFixedSize(true)
-            holder.listView.setLayoutManager(GridLayoutManager(context, 1))
-            holder.listView.adapter = proyektRecycleAdapter!!
+        try{
+            if (hashMap.get(katagory.get(position).katagory_name) != null) {
+                var proyektRecycleAdapter = ProyektRecycleAdapter(
+                    context,
+                    hashMap.get(katagory.get(position).katagory_name),
+                    onClickLIstener
+                )
+                holder.listView.setHasFixedSize(true)
+                holder.listView.setLayoutManager(GridLayoutManager(context, 1))
+                holder.listView.adapter = proyektRecycleAdapter!!
+            }
+        }catch (e:Exception){
+            println(e.message)
         }
 
 
@@ -81,11 +95,13 @@ class KatagoryRecycleAdapter(var context: Context, var katagory: MutableList<Kat
             showList.set(position , false)
             holder.listView.isVisible = false
             holder.show.setImageResource(R.drawable.angle_down)
+            if(katagory.get(position).id == 50){ sharedPreferencesManager.setValue("NSPExpend", false) }
 
         }else{
             showList.set(position , true)
             holder.listView.isVisible = true
             holder.show.setImageResource(R.drawable.up)
+            if(katagory.get(position).id == 50){ sharedPreferencesManager.setValue("NSPExpend", true) }
         }
         onClickLIstener.onClickSetExpendValues(katagory.get(position).id , showList.get(position))
     }

@@ -1,6 +1,7 @@
 package com.example.m.ismayilov.timetracker
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -22,8 +23,8 @@ import com.example.m.ismayilov.timetracker.onClick.OnClickLIstener
 import com.example.m.ismayilov.timetracker.room.Katagory
 import com.example.m.ismayilov.timetracker.room.MyRoomDatabase
 import com.example.m.ismayilov.timetracker.room.RunHistory
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.database.*
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -35,7 +36,7 @@ class RunScreen : Fragment() , OnClickLIstener {
     var katagoryRun :RunHistory? = null
     lateinit var katagoryRecycleAdapter: KatagoryRecycleAdapter
     lateinit var runProyektRecycleAdapter: RunProyektRecycleAdapter
-    lateinit var katagory: MutableList<Katagory>
+     var katagory = mutableListOf<Katagory>()
     lateinit var runKatagoryHistory: MutableList<RunHistory>
     lateinit var myRoomDatabase: MyRoomDatabase
     var fireBaseDatabase: FirebaseDatabase? = null
@@ -62,13 +63,9 @@ class RunScreen : Fragment() , OnClickLIstener {
         fireBaseDatabase = FirebaseDatabase.getInstance()
         firebase = fireBaseDatabase!!.getReference("users/")
 //        FireBaseSendMessage.SetServerKey(serverKey)
-        setAdapterDefault()
+        firebaseGetProject()
+
         setAdapterRun()
-
-
-        binding.runscreenEmptyText.setOnClickListener {
-            findNavController().navigate(R.id.action_runScreen2_to_addProek2)
-        }
 
 
         binding.runAddKatagory.setOnClickListener {
@@ -80,18 +77,26 @@ class RunScreen : Fragment() , OnClickLIstener {
 
 
     @SuppressLint("NewApi")
-    fun updateRun(id:Int, play: Boolean) {
+    fun updateRun(katagory: Katagory) {
         lifecycleScope.launch {
-            if(myRoomDatabase.runDao().readAllKatagory(true).size <= 2 || play) {
-                val run = myRoomDatabase.katagoryDao().readId(id)
-                myRoomDatabase.katagoryDao().updateRun(id, !run.run)
-                katagory = myRoomDatabase.katagoryDao().readNullKatagory("null")
-                createrunProject(run)
-                for (i in katagory) {
-                    val hasmapKatagory = myRoomDatabase.katagoryDao().readKatagory(i.katagory_name)
-                    hashMap.put(i.katagory_name, hasmapKatagory)
-                }
-                katagoryRecycleAdapter.update(katagory, hashMap)
+            if(myRoomDatabase.runDao().readAllKatagory(true).size <= 2 || katagory.run) {
+                val run = myRoomDatabase.katagoryDao().readId(katagory.id)
+               if(katagory.id != 50) {
+                   myRoomDatabase.katagoryDao().updateRun(katagory.id, !run.run)
+                   createrunProject(run)
+               }else{
+
+                   firebaseUpdatePlay(katagory)
+                   createrunProject(Katagory(50 , katagory.color_code , "NSP" ,katagory.project_name
+                       , katagory.run , false ))
+               }
+//                katagory = myRoomDatabase.katagoryDao().readNullKatagory("null")
+
+//                for (i in katagory) {
+//                    val hasmapKatagory = myRoomDatabase.katagoryDao().readKatagory(i.katagory_name)
+//                    hashMap.put(i.katagory_name, hasmapKatagory)
+//                }
+//                katagoryRecycleAdapter.update(katagory, hashMap)
             }else{
                 ArtelDialog().getMaxDialog(requireContext())
             }
@@ -130,36 +135,37 @@ class RunScreen : Fragment() , OnClickLIstener {
     }
 
     suspend fun katagoryRunUpdatePause(play: Boolean, create:Boolean, katagory: Katagory){
-        lateinit var runUpdate:RunHistory
+        lateinit var runHistory:RunHistory
         if(create){
-            myRoomDatabase.runDao().inertRunHistory(RunHistory(0 , katagory.id,katagory.color_code ,katagory.katagory_name , katagory.project_name , Date().time ,0,
-                0, time!! ,true  ))
+              runHistory = RunHistory(0 , katagory.id,katagory.color_code ,katagory.katagory_name , katagory.project_name , Date().time ,0,
+                0, time!! ,true  )
+            myRoomDatabase.runDao().inertRunHistory(runHistory)
+
         }else{
             if(play){
                 val eguals = (Math.abs(Date().time - katagoryRun!!.start_date)) + katagoryRun!!.daily_total
-                runUpdate = RunHistory(katagoryRun!!.id , katagory.id, katagoryRun!!.color_code ,katagoryRun!!.katagory_name , katagoryRun!!.project_name , katagoryRun!!.start_date ,Date().time,
+                runHistory = RunHistory(katagoryRun!!.id , katagory.id, katagoryRun!!.color_code ,katagoryRun!!.katagory_name , katagoryRun!!.project_name , katagoryRun!!.start_date ,Date().time,
                     eguals,  katagoryRun!!.date,false  )
             }else{
-                runUpdate = RunHistory(katagoryRun!!.id , katagory.id ,katagoryRun!!.color_code ,katagoryRun!!.katagory_name , katagoryRun!!.project_name , Date().time ,katagoryRun!!.end_date,
+                runHistory = RunHistory(katagoryRun!!.id , katagory.id ,katagoryRun!!.color_code ,katagoryRun!!.katagory_name , katagoryRun!!.project_name , Date().time ,katagoryRun!!.end_date,
                     katagoryRun!!.daily_total, katagoryRun!!.date ,true  )
             }
-            runUpdate.id = katagoryRun!!.id
-            myRoomDatabase.runDao().updateRun(runUpdate)
+            runHistory.id = katagoryRun!!.id
+            myRoomDatabase.runDao().updateRun(runHistory)
         }
-
-
-
+        updateFireBaseHistory(runHistory)
     }
 
     fun setAdapterDefault(){
         lifecycleScope.launch {
-            katagory = myRoomDatabase.katagoryDao().readNullKatagory("null")
-            if(katagory.size!=0){
-                binding.runscreenEmptyText.isVisible = false
-            }
+
+            katagory.addAll(myRoomDatabase.katagoryDao().readNullKatagory("null"))
+
             for(i in katagory){
-                val hasmapKatagory = myRoomDatabase.katagoryDao().readKatagory(i.katagory_name )
-                hashMap.put(i.katagory_name ,hasmapKatagory )
+                if(!i.katagory_name.equals("NSP")) {
+                    val hasmapKatagory = myRoomDatabase.katagoryDao().readKatagory(i.katagory_name )
+                    hashMap.put(i.katagory_name ,hasmapKatagory )
+                }
             }
             katagoryRecycleAdapter = KatagoryRecycleAdapter(requireContext() , katagory ,hashMap , this@RunScreen)
             binding.runAllProyekt.setHasFixedSize(true)
@@ -185,8 +191,8 @@ class RunScreen : Fragment() , OnClickLIstener {
         }
     }
 
-    override fun onClickListenerId(id: Int  , play: Boolean) {
-        updateRun(id , play)
+    override fun onClickListenerId(katagory: Katagory) {
+        updateRun(katagory)
     }
 
     override fun onClickListenerAction(katagoryName: String) {
@@ -208,6 +214,62 @@ class RunScreen : Fragment() , OnClickLIstener {
             binding.runscreenPlay.isVisible = true
         }
 
+    }
+
+    @SuppressLint("NewApi")
+    fun firebaseGetProject(){
+
+        var sorgu  = firebase!!.orderByChild("phone").equalTo(sharedPreferencesManager.getString("phone" , "defaulUserPhone"))
+
+        sorgu.addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                katagory.clear()
+                hashMap.clear()
+                katagory.add(Katagory(50 , "#FFFFFF" , "NSP" , "" , false , sharedPreferencesManager.getBoolean("NSPExpend" , false)!! ))
+                    for (i in snapshot.children) {
+                            val value = i.getValue(Users::class.java)
+
+                        if (value!!.project != null){
+                            var hasmapKatagory  = mutableListOf<Katagory>()
+                                for ((key, value) in value!!.project!!) {
+                                    hasmapKatagory.add(Katagory(50 , value.colorCode , "NSP" , key , value.play , false))
+                                }
+                              hashMap.put("NSP" ,hasmapKatagory )
+                            }
+                    }
+                setAdapterDefault()
+
+            }
+            override fun onCancelled(error: DatabaseError) {setAdapterDefault()
+            }
+        })
+    }
+
+    @SuppressLint("NewApi")
+    fun firebaseUpdatePlay(katagory: Katagory){
+        var project =  HashMap<String, Any>()
+        project.put("play" , !katagory.run)
+        project.put("colorCode" , katagory.color_code)
+        project.put("projectName" , katagory.project_name)
+        FirebaseDatabase.getInstance().getReference("users").child(sharedPreferencesManager.getString("phone" , "defaulUserPhone")!!).child("project").child(katagory.project_name)
+            .setValue(project)
+
+    }
+
+    @SuppressLint("NewApi")
+    fun updateFireBaseHistory(runHistory: RunHistory){
+        val date = Constant().simpleToDay.parse(time)
+        var project =  HashMap<String, Any>()
+        project.put("play" , runHistory.play)
+        project.put("colorCode" , runHistory.color_code)
+        project.put("projectName" , runHistory.project_name)
+        project.put("total" , runHistory.daily_total)
+        project.put("starDate" , runHistory.start_date)
+        project.put("endDate" , runHistory.end_date)
+
+        FirebaseDatabase.getInstance().getReference("users").child(sharedPreferencesManager.getString("phone" , "defaulUserPhone")!!).child("history")
+            .child(date.toString()).child(runHistory.project_name)
+            .setValue(project)
     }
 
     @SuppressLint("NewApi")
