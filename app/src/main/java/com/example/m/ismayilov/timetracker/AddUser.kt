@@ -26,11 +26,22 @@ class AddUser : Fragment() {
 
         binding.addAddBtn.setOnClickListener {
             var isEmpty  = true
-            if(binding.addPhone.text.isNullOrEmpty()){
-                isEmpty =  false
-                binding.addPhone.error  =  "Phone required"
-                binding.addPhone.requestFocus()
+
+            if (binding.addPhone.text?.isEmpty() == false) {
+                if (binding.addPhone.text!!.length < 9) {
+                    isEmpty =  false
+                    binding.addPhone.error = "Phone Lengs Error"
+                    binding.addPhone.requestFocus()
+                }
             }
+
+               if(binding.addPhone.text.isNullOrEmpty() ){
+                   isEmpty =  false
+                   binding.addPhone.error  =  "Phone required"
+                   binding.addPhone.requestFocus()
+               }
+
+
             if(binding.addName.text.isNullOrEmpty()){
                 isEmpty =  false
                 binding.addName.error  =  "Name required"
@@ -55,10 +66,11 @@ class AddUser : Fragment() {
 
     fun sendValuesFirebase(){
 
-        FirebaseDatabase.getInstance().getReference("users").child( binding.addPhone.text.toString()).setValue(
+        var phone:String = binding.addPhone.text!!.substring(binding.addPhone.text!!.length-9 ,binding.addPhone.text!!.length)
+        FirebaseDatabase.getInstance().getReference("users").child( phone).setValue(
             Users(
                 binding.addName.text.toString(),
-                binding.addPhone.text.toString(),
+                phone,
                 binding.addPassword.text.toString(),
                 false,true ,
                null,null

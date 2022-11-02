@@ -37,6 +37,7 @@ class HistoryFragment : Fragment() {
         firebase = fireBaseDatabase!!.getReference("users/")
         myRoomDatabase = MyRoomDatabase.getDatabase(requireContext())
 
+//        BaseActivity().setToolBarText("HISTORY")
         val args: HistoryFragmentArgs by navArgs()
         if (args.userHistory)
             getHistoryFirebase(args.phone)
@@ -58,7 +59,7 @@ class HistoryFragment : Fragment() {
                 for (i in snapshot.children) {
                     val value = i.getValue(Users::class.java)
 
-                    if (value!!.online != null){
+                    if (value!!.history != null){
                         for ((key, value) in value.history!!) {
                             historyBase.add(key)
                             var list = mutableListOf<RunHistory>()
@@ -69,7 +70,7 @@ class HistoryFragment : Fragment() {
                             history.put(key , list )
                         }
                         setAdapterListView(historyBase , history)
-
+                        if(historyBase.size !=0  ) binding.historyEmpty.isVisible =false
                     }
                 }
 

@@ -72,7 +72,7 @@ class OnlineAdapter(val context: Context, var onClickLIstener: OnClickLIstener, 
             onClickLIstener.onClickListenerAction(holder.phone.text.toString())
         }
         holder.history.setOnClickListener {
-            onClickLIstener.onClickSetExpendValues(list.get(position).phone.toInt() , false)
+            onClickLIstener.onClickSetExpendValues(list.get(position).phone , false)
         }
     }
 

@@ -11,6 +11,9 @@ interface KatagoryDao {
     @Query("select * from katagory")
     suspend fun readAllKatagory() : MutableList<Katagory>
 
+    @Query("select * from katagory where project_name=:project and katagory_name=:katagory")
+    suspend fun readCheckKatagory(katagory:String , project:String) : Katagory
+
     @Query("select * from katagory where project_name = :projectname")
     suspend fun readNullKatagory(projectname :String?) : MutableList<Katagory>
 
@@ -23,6 +26,9 @@ interface KatagoryDao {
     @Query("update katagory set run =:run where id= :id")
     suspend fun updateRun(id: Int, run: Boolean)
 
+    @Query("update katagory set project_name =:project where id= :id")
+    suspend fun updateRunID(id: Int, project: String)
+
     @Query("update katagory set expend =:expend where id= :id")
     suspend fun updateExpendValues(id: Int, expend: Boolean)
 
@@ -34,4 +40,7 @@ interface KatagoryDao {
 
     @Update
     suspend  fun updateKatagory(katagory: Katagory)
+
+//    @Query("delete from katagory where project_name=:project and katagory_name=:katagory ")
+//    suspend fun deleteKatagory(katagory:String , project:String)
 }

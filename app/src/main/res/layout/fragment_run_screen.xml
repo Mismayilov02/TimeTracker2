@@ -13,6 +13,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ImageView
+            android:id="@+id/imageView8"
+            android:layout_width="wrap_content"
+            android:layout_height="21dp"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/nspsolutions"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/run_run_proyekt"
             android:layout_width="0dp"
@@ -41,7 +51,7 @@
             android:layout_marginTop="15dp"
             android:src="@drawable/run_play"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/imageView8" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView7"

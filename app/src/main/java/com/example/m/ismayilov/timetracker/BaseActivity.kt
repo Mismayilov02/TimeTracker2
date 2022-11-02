@@ -1,16 +1,15 @@
 package com.example.m.ismayilov.timetracker
 
-import android.content.ContentValues.TAG
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
+import android.os.Handler
+import android.os.Looper
+import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.example.m.ismayilov.timetracker.databinding.ActivityBaseBinding
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.database.FirebaseDatabase.getInstance
 
 class BaseActivity : AppCompatActivity() {
     lateinit var binding: ActivityBaseBinding
@@ -23,9 +22,18 @@ class BaseActivity : AppCompatActivity() {
         setContentView(view)
         sharedPreferencesManager  = SharedPreferencesManager(this)
 
-        binding.runMenuBtn2.setOnClickListener {
+        binding.runMenuBtn.setOnClickListener {
             binding.drawerlayout.openDrawer(GravityCompat.START)
         }
+
+        binding.runMenuBtn.visibility = View.GONE
+        binding.runLogo.visibility = View.GONE
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            binding.runMenuBtn.visibility = View.VISIBLE
+            binding.runLogo.visibility = View.VISIBLE
+        }, 2700)
+
 
         val navHost = supportFragmentManager.findFragmentById(R.id.navhost) as NavHostFragment
         NavigationUI.setupWithNavController(binding.navigationview, navHost.navController)
@@ -38,7 +46,7 @@ class BaseActivity : AppCompatActivity() {
             menu.findItem(R.id.onlinenavhost).isVisible = false
         }
 
-
-
     }
+
+
 }

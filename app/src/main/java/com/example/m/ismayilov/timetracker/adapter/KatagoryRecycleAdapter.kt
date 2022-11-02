@@ -87,7 +87,7 @@ class KatagoryRecycleAdapter(var context: Context, var katagory: MutableList<Kat
             holder.listView.isVisible = true
             holder.show.setImageResource(R.drawable.up)
         }
-        onClickLIstener.onClickSetExpendValues(katagory.get(position).id , showList.get(position))
+        onClickLIstener.onClickSetExpendValues(katagory.get(position).id.toString() , showList.get(position))
     }
 
     fun update(katagory: MutableList<Katagory> ,hashMap: HashMap<String , MutableList<Katagory>>  ){

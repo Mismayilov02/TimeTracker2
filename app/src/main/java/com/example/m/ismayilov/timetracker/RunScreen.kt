@@ -72,7 +72,9 @@ class RunScreen : Fragment() , OnClickLIstener {
 
 
         binding.runAddKatagory.setOnClickListener {
-            findNavController().navigate(R.id.action_runScreen2_to_addProek2)
+            lifecycleScope.launch {myRoomDatabase.katagoryDao().updateRunID(2, "kjnsg")  }
+
+//            findNavController().navigate(R.id.action_runScreen2_to_addProek2)
         }
 
         return view
@@ -86,7 +88,7 @@ class RunScreen : Fragment() , OnClickLIstener {
                 val run = myRoomDatabase.katagoryDao().readId(id)
                 myRoomDatabase.katagoryDao().updateRun(id, !run.run)
                 katagory = myRoomDatabase.katagoryDao().readNullKatagory("null")
-                createrunProject(run)
+                createRunProject(run)
                 for (i in katagory) {
                     val hasmapKatagory = myRoomDatabase.katagoryDao().readKatagory(i.katagory_name)
                     hashMap.put(i.katagory_name, hasmapKatagory)
@@ -101,7 +103,7 @@ class RunScreen : Fragment() , OnClickLIstener {
 
 
     @SuppressLint("NewApi")
-    fun createrunProject(katagory: Katagory){
+    fun createRunProject(katagory: Katagory){
         time = sharedPreferencesManager.getString("todate" , "1111.11.11")!!
         lifecycleScope.launch {
             katagoryRun = myRoomDatabase.runDao().readDalyTrue(katagory.katagory_name , katagory.project_name )
@@ -123,8 +125,6 @@ class RunScreen : Fragment() , OnClickLIstener {
             runKatagoryHistory = myRoomDatabase.runDao().readAllKatagory(true)
             runProyektRecycleAdapter.update(runKatagoryHistory)
             setDesignRunIconView(runKatagoryHistory.size)
-            checkIsOnline(runKatagoryHistory.size)
-
         }
 
     }
@@ -171,7 +171,16 @@ class RunScreen : Fragment() , OnClickLIstener {
         lifecycleScope.launch {
             runKatagoryHistory = myRoomDatabase.runDao().readAllKatagory(true)
             setDesignRunIconView(runKatagoryHistory.size)
-            runProyektRecycleAdapter = RunProyektRecycleAdapter(requireContext() ,runKatagoryHistory  , this@RunScreen)
+            var list = mutableListOf<RunHistory>()
+            for (i in runKatagoryHistory){
+                if (myRoomDatabase.katagoryDao().readCheckKatagory(i.katagory_name , i.project_name) != null){
+                    list.add(i)
+                }else{
+                    i.play = false
+                    myRoomDatabase.runDao().updateRun(i)
+                }
+            }
+            runProyektRecycleAdapter = RunProyektRecycleAdapter(requireContext() ,list  , this@RunScreen)
             binding.runRunProyekt.setHasFixedSize(true)
             binding.runRunProyekt.setLayoutManager(GridLayoutManager(activity, 1))
             binding.runRunProyekt.adapter = runProyektRecycleAdapter
@@ -193,8 +202,8 @@ class RunScreen : Fragment() , OnClickLIstener {
         Navigation.findNavController(requireView()).navigate(direction)
     }
 
-    override fun onClickSetExpendValues(id: Int, expend: Boolean) {
-        setExpendValues(id , expend)
+    override fun onClickSetExpendValues(id: String, expend: Boolean) {
+        setExpendValues(id.toInt() , expend)
     }
 
     fun setDesignRunIconView(size:Int){
@@ -209,14 +218,5 @@ class RunScreen : Fragment() , OnClickLIstener {
 
     }
 
-    @SuppressLint("NewApi")
-    fun checkIsOnline(size: Int){
-//        var online = false
-//        if (size != 0)  online = true
-//        val updateValue = HashMap<String, Any>()
-//        updateValue["online"] = online
-//        firebase!!.child(sharedPreferencesManager.getString("phone" , "userDefaultPhone").toString()).updateChildren(updateValue)
-
-    }
 
 }
