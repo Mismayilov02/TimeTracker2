@@ -26,6 +26,9 @@ interface RunDao {
     @Query("select * from run_history where date=:date ")
     suspend fun readTime(date:String) :MutableList<RunHistory>
 
+    @Query("select * from run_history where play=:play and  katagory_name = 'NSP' ")
+    suspend fun readNSPRun(play: Boolean) :MutableList<RunHistory>
+
     @Query("select DISTINCT date from run_history order by start_date desc  ")
     suspend fun readUniqTime() : MutableList<String>
 

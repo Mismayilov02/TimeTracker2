@@ -27,7 +27,6 @@ class CreateFragment : Fragment() {
     lateinit var artelDialog: ArtelDialog
     lateinit var sharedPreferencesManager: SharedPreferencesManager
     lateinit var view: FrameLayout
-    var checkUser = false
     @SuppressLint("SuspiciousIndentation")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,7 +66,6 @@ class CreateFragment : Fragment() {
 
             if (artelDialog.isConnected(requireContext())){
                 if (isEmpty) {
-                    checkUser = true
                     sharedPreferencesManager.setValue("phone" ,binding.createPhone.text.toString() )
                     sharedPreferencesManager.setValue("name" ,binding.createName.text.toString() )
                     sharedPreferencesManager.setValue("password" ,binding.createPassword.text.toString() )
@@ -99,7 +97,7 @@ class CreateFragment : Fragment() {
         var sorgu = firebase!!.orderByChild("phone").equalTo(binding.createPhone.text.toString())
         sorgu.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (checkUser){
+
                     when (snapshot.exists()) {
                         true -> {
                             artelDialog.getHaveDialog(requireContext(), view)
@@ -108,8 +106,7 @@ class CreateFragment : Fragment() {
                             sendValuesFirebase()
                         }
                     }
-                    checkUser = false
-                }
+                sorgu.removeEventListener(this)
             }
             override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(requireContext(), error.message, Toast.LENGTH_SHORT).show()

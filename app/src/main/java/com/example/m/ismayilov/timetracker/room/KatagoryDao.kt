@@ -14,10 +14,14 @@ interface KatagoryDao {
     @Query("select * from katagory where project_name = :projectname")
     suspend fun readNullKatagory(projectname :String?) : MutableList<Katagory>
 
+    @Query("select * from katagory where project_name=:project and katagory_name=:katagory")
+    suspend fun readCheckKatagory(katagory:String , project:String) : Katagory
+
+
     @Query("select * from katagory where id = :id")
     suspend fun readId(id: Int ) : Katagory
 
-    @Query("select * from katagory where katagory_name = :katagory_name and project_name != 'null'")
+    @Query("select * from katagory where katagory_name = :katagory_name and project_name != 'nulll'")
     suspend fun readKatagory(katagory_name :String ) : MutableList<Katagory>
 
     @Query("update katagory set run =:run where id= :id")

@@ -94,7 +94,6 @@ class Login : Fragment() {
         sorgu.addValueEventListener(object:ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
 
-                if (btnClisck){
                     for (i in snapshot.children) {
                         try {
                             val value = i.getValue(Users::class.java)
@@ -111,8 +110,7 @@ class Login : Fragment() {
                         Snackbar.make(view!!, "Numara ve ya Sifre Yalnis", Snackbar.LENGTH_SHORT)
                             .show()
                     }
-                    btnClisck = false
-                }
+                sorgu.removeEventListener(this)
             }
             override fun onCancelled(error: DatabaseError) {
             }

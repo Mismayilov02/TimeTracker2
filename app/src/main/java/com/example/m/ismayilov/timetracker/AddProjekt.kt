@@ -96,7 +96,7 @@ class AddProek : Fragment() {
         var katagory:Katagory
         lifecycleScope.launch {
             if (!katagoryOrProyek) {
-                 katagory = Katagory(0, defaultColor, binding.addProektName.text.toString() , "null" ,false ,false)
+                 katagory = Katagory(0, defaultColor, binding.addProektName.text.toString() , "nulll" ,false ,false)
                 myRoomDatabase.katagoryDao().writeKatagoryr(katagory)
                 findNavController().navigate(R.id.action_addProek2_to_runScreen2)
 
