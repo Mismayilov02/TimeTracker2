@@ -71,6 +71,7 @@ class HistoryFragment : Fragment() {
                         }
                         setAdapterListView(historyBase , history)
                         if(historyBase.size !=0  ) binding.historyEmpty.isVisible =false
+                        sorgu.removeEventListener(this)
                     }
                 }
 

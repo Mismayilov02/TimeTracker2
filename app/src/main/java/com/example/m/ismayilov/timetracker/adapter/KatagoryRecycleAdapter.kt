@@ -2,9 +2,13 @@ package com.example.m.ismayilov.timetracker.adapter
 
 import android.content.Context
 import android.graphics.Color
+import android.opengl.Visibility
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -18,22 +22,31 @@ import com.example.m.ismayilov.timetracker.room.MyRoomDatabase
 
 class KatagoryRecycleAdapter(var context: Context, var katagory: MutableList<Katagory>, var hashMap: HashMap<String , MutableList<Katagory>>  ,val onClickLIstener: OnClickLIstener):RecyclerView.Adapter<KatagoryRecycleAdapter.proyektViewDesign>() {
 
+//   lateinit var proyektRecycleAdapter:ProyektRecycleAdapter
     var showList  = mutableListOf<Boolean>()
-    var  myRoomDatabase = MyRoomDatabase.getDatabase(context)
-
+    var adapterList = mutableListOf<ProyektRecycleAdapter>()
+    var i = 0
     inner class proyektViewDesign(view :View):RecyclerView.ViewHolder(view){
         var color: CardView
         var name :TextView
         var listView :RecyclerView
+        var save :Button
         var imageViewAdd:ImageView
         var show:ImageView
+        var delete:ImageView
+        var edit:ImageView
+        var add:ImageView
 
         init {
             color = view.findViewById(R.id.katagory_color)
             name= view.findViewById(R.id.katagory_name)
             listView = view.findViewById(R.id.katagory_recylerview)
+            save = view.findViewById(R.id.katagory_design_save_btn)
             imageViewAdd = view.findViewById(R.id.katagory_esign_edit)
             show = view.findViewById(R.id.katagory_expend)
+            edit = view.findViewById(R.id.katagory_edit)
+            delete = view.findViewById(R.id.katagory_delete)
+            add = view.findViewById(R.id.katagory_add)
         }
     }
 
@@ -44,7 +57,13 @@ class KatagoryRecycleAdapter(var context: Context, var katagory: MutableList<Kat
     }
 
     override fun onBindViewHolder(holder: proyektViewDesign, position: Int) {
-        showList.add(position , katagory.get(position).expend)
+            showList.add(position, katagory.get(position).expend)
+        var proyektRecycleAdapter = ProyektRecycleAdapter(context, hashMap.get(katagory.get(position).katagory_name) , onClickLIstener)
+        holder.listView.setHasFixedSize(true)
+        holder.listView.setLayoutManager(GridLayoutManager(context, 1))
+        holder.listView.adapter = proyektRecycleAdapter!!
+        adapterList.add(proyektRecycleAdapter)
+
         holder.name.text = katagory.get(position).katagory_name
         holder.color.setCardBackgroundColor(Color.parseColor(katagory.get(position).color_code))
         if (katagory.get(position).expend) {
@@ -52,19 +71,28 @@ class KatagoryRecycleAdapter(var context: Context, var katagory: MutableList<Kat
             holder.show.setImageResource(R.drawable.up)
         }
 
+        holder.show.setOnClickListener{
+            setVisibleList(holder , position , false)
+        }
+
         holder.imageViewAdd.setOnClickListener {
+            editVisible(true , holder , position)
+        }
+
+        holder.save.setOnClickListener {
+            editVisible(false , holder , position)
+        }
+
+        holder.edit.setOnClickListener {
+            onClickLIstener.onClickSetEditName(katagory.get(position).project_name , katagory.get(position).katagory_name)
+        }
+
+        holder.add.setOnClickListener {
             onClickLIstener.onClickListenerAction(katagory.get(position).katagory_name)
         }
 
-        holder.show.setOnClickListener{
-            setVisibleList(holder , position)
-        }
-
-        if(hashMap.get(katagory.get(position).katagory_name)!!.size !=0) {
-            var proyektRecycleAdapter = ProyektRecycleAdapter(context, hashMap.get(katagory.get(position).katagory_name) , onClickLIstener)
-            holder.listView.setHasFixedSize(true)
-            holder.listView.setLayoutManager(GridLayoutManager(context, 1))
-            holder.listView.adapter = proyektRecycleAdapter!!
+        holder.delete.setOnClickListener {
+            onClickLIstener.onClickSetDelete(katagory.get(position).katagory_name , katagory.get(position).project_name)
         }
 
 
@@ -76,8 +104,8 @@ class KatagoryRecycleAdapter(var context: Context, var katagory: MutableList<Kat
     }
 
 
-    fun setVisibleList(holder: proyektViewDesign, position: Int){
-        if(showList.get(position) == true){
+    fun setVisibleList(holder: proyektViewDesign, position: Int , edit:Boolean){
+        if(showList.get(position) == true && !edit){
             showList.set(position , false)
             holder.listView.isVisible = false
             holder.show.setImageResource(R.drawable.angle_down)
@@ -94,5 +122,30 @@ class KatagoryRecycleAdapter(var context: Context, var katagory: MutableList<Kat
         this.katagory = katagory
         this.hashMap = hashMap
         notifyDataSetChanged()
+    }
+
+    fun editVisible(visibility:Boolean , holder: proyektViewDesign , position: Int){
+        if (visibility){
+            holder.edit.visibility = View.VISIBLE
+            holder.delete.visibility = View.VISIBLE
+            holder.add.visibility = View.VISIBLE
+            holder.show.visibility = View.INVISIBLE
+            holder.imageViewAdd.visibility = View.INVISIBLE
+            holder.save.visibility = View.VISIBLE
+            setVisibleList(holder , position , true)
+            Handler(Looper.getMainLooper()).postDelayed({
+                adapterList.get(position).editVisible(true)
+            }, 5)
+
+            println(position)
+        }else{
+            holder.edit.visibility = View.GONE
+            holder.delete.visibility = View.GONE
+            holder.add.visibility = View.GONE
+            holder.show.visibility = View.VISIBLE
+            holder.imageViewAdd.visibility = View.VISIBLE
+            holder.save.visibility = View.GONE
+            adapterList.get(position).editVisible(false)
+        }
     }
 }

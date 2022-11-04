@@ -1,12 +1,18 @@
 package com.example.m.ismayilov.timetracker
 
 import android.annotation.SuppressLint
+import android.app.Dialog
+import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -34,10 +40,12 @@ class RunScreen : Fragment() , OnClickLIstener {
     lateinit var binding: FragmentRunScreenBinding
     lateinit var katagoryRecycleAdapter: KatagoryRecycleAdapter
     lateinit var runProyektRecycleAdapter: RunProyektRecycleAdapter
-    lateinit var katagory: MutableList<Katagory>
-    lateinit var runKatagoryHistory: MutableList<RunHistory>
+    lateinit var katagoryList: MutableList<Katagory>
+    lateinit var runKatagoryHistoryList: MutableList<RunHistory>
     var katagoryRun :RunHistory? = null
     lateinit var time: String
+    var updateRun = false
+    var updateKatagory = false
     lateinit var myRoomDatabase: MyRoomDatabase
     var fireBaseDatabase: FirebaseDatabase? = null
     var firebase: DatabaseReference? = null
@@ -72,9 +80,7 @@ class RunScreen : Fragment() , OnClickLIstener {
 
 
         binding.runAddKatagory.setOnClickListener {
-            lifecycleScope.launch {myRoomDatabase.katagoryDao().updateRunID(2, "kjnsg")  }
-
-//            findNavController().navigate(R.id.action_runScreen2_to_addProek2)
+            findNavController().navigate(R.id.action_runScreen2_to_addProek2)
         }
 
         return view
@@ -87,13 +93,13 @@ class RunScreen : Fragment() , OnClickLIstener {
             if(myRoomDatabase.runDao().readAllKatagory(true).size <= 2 || play) {
                 val run = myRoomDatabase.katagoryDao().readId(id)
                 myRoomDatabase.katagoryDao().updateRun(id, !run.run)
-                katagory = myRoomDatabase.katagoryDao().readNullKatagory("null")
+                katagoryList = myRoomDatabase.katagoryDao().readNullKatagory("nulll")
                 createRunProject(run)
-                for (i in katagory) {
+                for (i in katagoryList) {
                     val hasmapKatagory = myRoomDatabase.katagoryDao().readKatagory(i.katagory_name)
                     hashMap.put(i.katagory_name, hasmapKatagory)
                 }
-                katagoryRecycleAdapter.update(katagory, hashMap)
+                setAdapterRunOrUpdate(katagoryList, hashMap)
             }else{
                 ArtelDialog().getMaxDialog(requireContext())
             }
@@ -112,7 +118,9 @@ class RunScreen : Fragment() , OnClickLIstener {
                 if(time.equals(katagoryRun!!.date)){
                     katagoryRunUpdatePause(katagoryRun!!.play, false, katagory)
                 }else {
-                    if (katagoryRun!!.play){ katagoryRunUpdatePause(true, false, katagory) }
+                    if (katagoryRun!!.play){
+                        katagoryRunUpdatePause(true, false, katagory)
+                    }
                     else{
                         katagoryRunUpdatePause(false , true , katagory)
                     }
@@ -122,9 +130,9 @@ class RunScreen : Fragment() , OnClickLIstener {
                 katagoryRunUpdatePause(false , true , katagory)
             }
 
-            runKatagoryHistory = myRoomDatabase.runDao().readAllKatagory(true)
-            runProyektRecycleAdapter.update(runKatagoryHistory)
-            setDesignRunIconView(runKatagoryHistory.size)
+            runKatagoryHistoryList = myRoomDatabase.runDao().readAllKatagory(true)
+            setRunAdatpterOrUpdate(runKatagoryHistoryList)
+            setDesignRunIconView(runKatagoryHistoryList.size)
         }
 
     }
@@ -149,30 +157,47 @@ class RunScreen : Fragment() , OnClickLIstener {
 
     }
 
-
-    fun setAdapterDefault() {
-        lifecycleScope.launch {
-            katagory = myRoomDatabase.katagoryDao().readNullKatagory("null")
-            if (katagory.size != 0) {
-                binding.runscreenEmptyText.isVisible = false
-            }
-            for (i in katagory) {
-                val hasmapKatagory = myRoomDatabase.katagoryDao().readKatagory(i.katagory_name)
-                hashMap.put(i.katagory_name, hasmapKatagory)
-            }
-            katagoryRecycleAdapter =
-                KatagoryRecycleAdapter(requireContext(), katagory, hashMap, this@RunScreen)
+    fun setRunAdatpterOrUpdate(list:MutableList<RunHistory>){
+        if (!updateRun){
+            runProyektRecycleAdapter = RunProyektRecycleAdapter(requireContext() ,list  , this@RunScreen)
+            binding.runRunProyekt.setHasFixedSize(true)
+            binding.runRunProyekt.setLayoutManager(GridLayoutManager(activity, 1))
+            binding.runRunProyekt.adapter = runProyektRecycleAdapter
+            updateRun = true
+        }else{
+            runProyektRecycleAdapter.update(list)
+        }
+    }
+    fun setAdapterRunOrUpdate(katagory: MutableList<Katagory>  , hashMap:HashMap<String , MutableList<Katagory>>){
+        if (!updateKatagory){
+            katagoryRecycleAdapter = KatagoryRecycleAdapter(requireContext() , katagory ,hashMap , this@RunScreen)
             binding.runAllProyekt.setHasFixedSize(true)
             binding.runAllProyekt.setLayoutManager(GridLayoutManager(activity, 1))
             binding.runAllProyekt.adapter = katagoryRecycleAdapter
+            updateKatagory = true
+        }else{
+            katagoryRecycleAdapter.update(katagory , hashMap)
+        }
+    }
+
+
+    fun setAdapterDefault() {
+        lifecycleScope.launch {
+            katagoryList = myRoomDatabase.katagoryDao().readNullKatagory("nulll")
+            binding.runscreenEmptyText.isVisible = katagoryList.size == 0
+            for (i in katagoryList) {
+                val hasmapKatagory = myRoomDatabase.katagoryDao().readKatagory(i.katagory_name)
+                hashMap.put(i.katagory_name, hasmapKatagory)
+            }
+          setAdapterRunOrUpdate(katagoryList , hashMap)
         }
     }
     fun setAdapterRun(){
         lifecycleScope.launch {
-            runKatagoryHistory = myRoomDatabase.runDao().readAllKatagory(true)
-            setDesignRunIconView(runKatagoryHistory.size)
+            runKatagoryHistoryList = myRoomDatabase.runDao().readAllKatagory(true)
+            setDesignRunIconView(runKatagoryHistoryList.size)
             var list = mutableListOf<RunHistory>()
-            for (i in runKatagoryHistory){
+            for (i in runKatagoryHistoryList){
                 if (myRoomDatabase.katagoryDao().readCheckKatagory(i.katagory_name , i.project_name) != null){
                     list.add(i)
                 }else{
@@ -180,10 +205,7 @@ class RunScreen : Fragment() , OnClickLIstener {
                     myRoomDatabase.runDao().updateRun(i)
                 }
             }
-            runProyektRecycleAdapter = RunProyektRecycleAdapter(requireContext() ,list  , this@RunScreen)
-            binding.runRunProyekt.setHasFixedSize(true)
-            binding.runRunProyekt.setLayoutManager(GridLayoutManager(activity, 1))
-            binding.runRunProyekt.adapter = runProyektRecycleAdapter
+           setRunAdatpterOrUpdate(list)
         }
     }
 
@@ -198,13 +220,23 @@ class RunScreen : Fragment() , OnClickLIstener {
     }
 
     override fun onClickListenerAction(katagoryName: String) {
-        val direction = RunScreenDirections.actionRunScreen2ToAddProek2(true, katagoryName)
+        val direction = RunScreenDirections.actionRunScreen2ToAddProek2( katagoryName , "" , "project")
         Navigation.findNavController(requireView()).navigate(direction)
     }
 
     override fun onClickSetExpendValues(id: String, expend: Boolean) {
         setExpendValues(id.toInt() , expend)
     }
+
+    override fun onClickSetDelete(katagoryName: String, projectName: String) {
+      getDeleteProjectDialog( katagoryName , projectName)
+    }
+
+    override fun onClickSetEditName(projectName: String, katagoryName: String) {
+        val direction = RunScreenDirections.actionRunScreen2ToAddProek2(katagoryName , "" , "changeName" , projectName)
+        Navigation.findNavController(requireView()).navigate(direction)
+    }
+
 
     fun setDesignRunIconView(size:Int){
         if(size== 0){
@@ -218,5 +250,30 @@ class RunScreen : Fragment() , OnClickLIstener {
 
     }
 
+    fun getDeleteProjectDialog( katagory:String, project:String) {
+        val dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.delete_dialog)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.show()
+        dialog.findViewById<ImageView>(R.id.delete_dialog_exit).setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.findViewById<TextView>(R.id.delete_dialog_yes).setOnClickListener {
+                lifecycleScope.launch {
+                    if (project.equals("nulll")){
+                            myRoomDatabase.katagoryDao().deleteKatagory(katagory)
+                    }else{
+                        myRoomDatabase.katagoryDao().deleteProject(katagory , project)
+                    }
+                    setAdapterRun()
+                    setAdapterDefault()
+                    dialog.dismiss()
+                }
+
+        }
+
+
+
+    }
 
 }

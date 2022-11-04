@@ -43,12 +43,16 @@ class AddProek : Fragment() {
         view = binding.root
         myRoomDatabase = MyRoomDatabase.getDatabase(requireContext())
         fireBaseDatabase = FirebaseDatabase.getInstance()
-
-
+        firebase = fireBaseDatabase!!.getReference("users/")
         val args: AddProekArgs by navArgs()
-        if (args.katagoryOrProject || args.toOnline) {
-            binding.addProektName.setHint("Proyek adi")
+        if (args.type.equals("project") || args.type.equals("online")) {
+            binding.addProektName.setHint("Project Name")
         }
+
+        if (args.type.equals("changeName")){
+            binding.addAddBtn.text = "Change"
+        }
+
 
         lifecycleScope.launch {
             if (myRoomDatabase.colorDao().readAllColor().size != 0) {
@@ -67,9 +71,9 @@ class AddProek : Fragment() {
 
         binding.addAddBtn.setOnClickListener {
            if (binding.addProektName.text.isEmpty()){
-               setSnakebarMessage(args.katagoryOrProject , it)
+               Snackbar.make(it, "Name cannot be blank", Snackbar.LENGTH_SHORT).show()
            }else{
-               saveDatabase(args.katagoryOrProject ,args.toOnline, args.katagoryName , args.phone)
+               saveDatabase(args.type , args.katagoryName , args.phone , args.projectName)
            }
         }
 
@@ -97,34 +101,52 @@ class AddProek : Fragment() {
 
     }
 
-    fun saveDatabase(katagoryOrProyek: Boolean  , toOnline:Boolean , katagoryName :String , phone:String) {
+    fun saveDatabase(type:String, katagoryName :String , phone:String , projectName: String) {
         var katagory:Katagory
         lifecycleScope.launch {
-            if (!katagoryOrProyek) {
-                 katagory = Katagory(0, defaultColor, binding.addProektName.text.toString() , "null" ,false ,false)
+            if (type.equals("project")) {
+                katagory = Katagory(0, defaultColor , katagoryName , binding.addProektName.text.toString(),false  , false)
                 myRoomDatabase.katagoryDao().writeKatagoryr(katagory)
                 findNavController().navigate(R.id.action_addProek2_to_runScreen2)
-
-            }else if (toOnline){
+            }else if (type.equals("online")){
+                saveFirebaseUser(phone ,  binding.addProektName.text.toString() , defaultColor)
+            }
+            else if (type.equals("changeName")){
+                changeNameDatabase(katagoryName , projectName)
+            }
+            else if (type.equals("onlineUpdateProject")){
+                fireBaseDeleteValues(phone , projectName  )
                 saveFirebaseUser(phone ,  binding.addProektName.text.toString() , defaultColor)
             }
             else {
-                 katagory = Katagory(0, defaultColor , katagoryName , binding.addProektName.text.toString(),false  , false)
+
+                katagory = Katagory(0, defaultColor, binding.addProektName.text.toString() , "nulll" ,false ,false)
                 myRoomDatabase.katagoryDao().writeKatagoryr(katagory)
                 findNavController().navigate(R.id.action_addProek2_to_runScreen2)
+
             }
 
         }
     }
 
-    fun setSnakebarMessage(katagoryOrProyek: Boolean , it:View  ){
-        if (!katagoryOrProyek) {
-            Snackbar.make(it, "lutfen bir katagory ismi giriniz", Snackbar.LENGTH_SHORT).show()
-        } else {
-                Snackbar.make(it, "lutfen bir proyekt ismi giriniz", Snackbar.LENGTH_SHORT).show()
-            }
+  fun changeNameDatabase(katagoryName: String , projectName: String){
+      lifecycleScope.launch {
+          if (projectName.equals("nulll")){
+              myRoomDatabase.katagoryDao().updateKatagoryColor(katagoryName , defaultColor)
+            myRoomDatabase.katagoryDao().updateKatagoryName(katagoryName , binding.addProektName.text.toString())
+              myRoomDatabase.runDao().updateKatagoryColor(defaultColor , katagoryName )
+              myRoomDatabase.runDao().updateKatagoryName( katagoryName , binding.addProektName.text.toString() )
 
-        }
+          }else{
+              myRoomDatabase.katagoryDao().updateProjectColor(defaultColor , projectName , katagoryName)
+              myRoomDatabase.katagoryDao().updateProjectName(binding.addProektName.text.toString() , projectName ,katagoryName)
+              myRoomDatabase.runDao().updateProjectName(katagoryName , projectName , binding.addProektName.text.toString() )
+              myRoomDatabase.runDao().updateProjectColor(defaultColor ,katagoryName , projectName )
+          }
+          findNavController().navigate(R.id.action_addProek2_to_runScreen2)
+      }
+
+  }
 
     fun saveFirebaseUser(phone:String ,projectName: String , colorCode:String ){
         var project =  HashMap<String, String>()
@@ -133,6 +155,10 @@ class AddProek : Fragment() {
         FirebaseDatabase.getInstance().getReference("users").child(phone).child("project").child(projectName)
             .setValue(project)
         findNavController().navigate(R.id.action_addProek2_to_onlinenavhost)
+    }
+
+    fun fireBaseDeleteValues(phone: String , oldProjectName: String){
+        firebase!!.child(phone).child("project").child(oldProjectName).removeValue()
     }
 
 }

@@ -2,9 +2,12 @@ package com.example.m.ismayilov.timetracker
 
 import android.content.Context
 import android.opengl.Visibility
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -13,17 +16,24 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.m.ismayilov.timetracker.adapter.OnlineUserItemAdapter
 import com.example.m.ismayilov.timetracker.onClick.OnClickLIstener
+import com.example.m.ismayilov.timetracker.onClick.OnlineOnClickLIstener
 
-class OnlineAdapter(val context: Context, var onClickLIstener: OnClickLIstener, val list: MutableList<Users>,  /*val userProyekt: HashMap<String , MutableList<UserDefaultProject>>*/ ):RecyclerView.Adapter<OnlineAdapter.cardViewDesign>() {
+class OnlineAdapter(val context: Context, var onClickLIstener: OnlineOnClickLIstener, val list: MutableList<Users>):RecyclerView.Adapter<OnlineAdapter.cardViewDesign>() {
 
     var showList  = mutableListOf<Boolean>()
+    var adapterList = mutableListOf<OnlineUserItemAdapter>()
+    lateinit var Useradapter:OnlineUserItemAdapter
+
     inner class cardViewDesign(view :View):RecyclerView.ViewHolder(view){
         var name: TextView
         var phone :TextView
         var profile:ImageView
         var edit:ImageView
         var expand:ImageView
-        var history:ImageView
+        var delete:ImageView
+        var add:ImageView
+        var userEdit:ImageView
+        var save:Button
         var lisview:RecyclerView
 
 
@@ -32,7 +42,10 @@ class OnlineAdapter(val context: Context, var onClickLIstener: OnClickLIstener, 
             phone= view.findViewById(R.id.online_phone)
             profile= view.findViewById(R.id.online_profile)
             expand= view.findViewById(R.id.online_expend)
-            history= view.findViewById(R.id.online_user_history)
+            userEdit= view.findViewById(R.id.online_user_edit)
+            save= view.findViewById(R.id.online_user_save)
+            delete= view.findViewById(R.id.online_user_delete)
+            add= view.findViewById(R.id.online_user_add)
             edit= view.findViewById(R.id.online_edit)
             lisview= view.findViewById(R.id.online_user_recyclerview)
         }
@@ -52,27 +65,49 @@ class OnlineAdapter(val context: Context, var onClickLIstener: OnClickLIstener, 
         holder.name.text = list.get(position).name
         holder.phone.text = list.get(position).phone
 
-
-        if (list.get(position).project != null){
-            val projeList = mutableListOf<UserDeaultProjectName>()
+        var projeList = mutableListOf<UserDeaultProjectName>()
+        if (list.get(position).project != null) {
             for ((key, value) in list.get(position).project!!) {
                 projeList.add(UserDeaultProjectName(key, value.colorCode))
             }
-            val adapter = OnlineUserItemAdapter(context, projeList)
+        }
+            Useradapter = OnlineUserItemAdapter(context, list.get(position).phone , projeList ,onClickLIstener)
             holder.lisview.setHasFixedSize(true)
             holder.lisview.setLayoutManager(GridLayoutManager(context, 1))
-            holder.lisview.adapter = adapter
-        }
+            holder.lisview.adapter = Useradapter
+            adapterList.add(Useradapter)
+//        }
+
 
         holder.expand.setOnClickListener {
-            setVisibleList(holder , position)
+            setVisibleList(holder , position , false)
         }
 
         holder.edit.setOnClickListener {
+            editOnClick(true , position , holder)
+        }
+
+//        holder.userEdit.setOnClickListener {
+//            onClickLIstener.onClickSetUserChangePojectName(list.get(position).phone)
+//        }
+
+        holder.save.setOnClickListener {
+            editOnClick(false , position , holder)
+        }
+        holder.add.setOnClickListener {
             onClickLIstener.onClickListenerAction(holder.phone.text.toString())
         }
-        holder.history.setOnClickListener {
-            onClickLIstener.onClickSetExpendValues(list.get(position).phone , false)
+        holder.profile.setOnClickListener {
+            onClickLIstener.onClickSetHistory(list.get(position).phone)
+        }
+        holder.name.setOnClickListener {
+            onClickLIstener.onClickSetHistory(list.get(position).phone)
+        }
+        holder.phone.setOnClickListener {
+            onClickLIstener.onClickSetHistory(list.get(position).phone)
+        }
+        holder.delete.setOnClickListener {
+            onClickLIstener.onClickSetDeleteUser(list.get(position).phone)
         }
     }
 
@@ -82,8 +117,8 @@ class OnlineAdapter(val context: Context, var onClickLIstener: OnClickLIstener, 
 
 
 
-    fun setVisibleList(holder: OnlineAdapter.cardViewDesign, position: Int){
-        if(showList.get(position) == true){
+    fun setVisibleList(holder: OnlineAdapter.cardViewDesign, position: Int , expend:Boolean){
+        if(showList.get(position) == true && !expend ){
             showList.set(position , false)
             holder.lisview.visibility = View.GONE
             holder.expand.setImageResource(R.drawable.angle_down)
@@ -95,5 +130,30 @@ class OnlineAdapter(val context: Context, var onClickLIstener: OnClickLIstener, 
         }
     }
 
+
+    fun editOnClick(editShow:Boolean , position: Int, holder: cardViewDesign){
+        if (editShow){
+            holder.userEdit.visibility = View.VISIBLE
+            holder.delete.visibility = View.VISIBLE
+            holder.add.visibility = View.VISIBLE
+            holder.save.visibility = View.VISIBLE
+            holder.edit.visibility = View.GONE
+            holder.expand.visibility = View.GONE
+            setVisibleList(holder , position , true)
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                adapterList.get(position).editOnClick(true)
+            }, 5)
+        }else{
+            holder.userEdit.visibility = View.GONE
+            holder.delete.visibility = View.GONE
+            holder.add.visibility = View.GONE
+            holder.save.visibility = View.GONE
+            holder.edit.visibility = View.VISIBLE
+            holder.expand.visibility = View.VISIBLE
+            adapterList.get(position).editOnClick(false)
+        }
+
+    }
 
 }

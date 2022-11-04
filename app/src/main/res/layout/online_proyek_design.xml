@@ -7,6 +7,32 @@
     android:paddingBottom="5dp">
 
     <ImageView
+        android:id="@+id/online_project_edit"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:padding="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/online_proyekt_text"
+        app:layout_constraintEnd_toStartOf="@+id/online_project_delete"
+        app:layout_constraintTop_toTopOf="@+id/online_proyekt_text"
+        app:layout_constraintVertical_bias="0.8"
+        app:srcCompat="@drawable/pencil"
+        app:tint="@color/icon_color" />
+
+    <ImageView
+        android:id="@+id/online_project_delete"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="10dp"
+        android:padding="5dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/online_project_edit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/online_project_edit"
+        app:srcCompat="@drawable/trash"
+        app:tint="@color/red" />
+
+    <ImageView
         android:id="@+id/online_proyekt_color"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -23,12 +49,12 @@
 
         android:layout_marginStart="25dp"
         android:layout_marginTop="5dp"
-        android:layout_marginEnd="25dp"
+        android:layout_marginEnd="10dp"
         android:gravity="start|center_vertical"
         android:text="@{item.name}"
         android:textColor="#000000"
         android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/online_project_edit"
         app:layout_constraintStart_toEndOf="@+id/online_proyekt_color"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -14,16 +14,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.m.ismayilov.timetracker.databinding.FragmentOnlineBinding
 import com.example.m.ismayilov.timetracker.onClick.OnClickLIstener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.example.m.ismayilov.timetracker.onClick.OnlineOnClickLIstener
+import com.google.firebase.database.*
 
-class Online : Fragment()  , OnClickLIstener {
+class Online : Fragment()  , OnlineOnClickLIstener {
 
     lateinit var binding:FragmentOnlineBinding
     lateinit var view: FrameLayout
-
+    var fireBaseDatabase: FirebaseDatabase? = null
+    var firebase: DatabaseReference? = null
     lateinit var onlineAdapter: OnlineAdapter
 
     override fun onCreateView(
@@ -34,10 +33,10 @@ class Online : Fragment()  , OnClickLIstener {
         binding =  FragmentOnlineBinding.inflate(inflater, container, false)
         view = binding.root
 
-        var fireBaseDatabase  = FirebaseDatabase.getInstance()
-        var firebase = fireBaseDatabase.getReference("users/")
+         fireBaseDatabase  = FirebaseDatabase.getInstance()
+         firebase = fireBaseDatabase!!.getReference("users/")
 
-        firebase.addValueEventListener(object: ValueEventListener {
+        firebase!!.addValueEventListener(object: ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 var list = mutableListOf<Users>()
@@ -84,13 +83,27 @@ class Online : Fragment()  , OnClickLIstener {
     }
 
     override fun onClickListenerAction(phone: String) {
-        val direction = OnlineDirections.actionOnlinenavhostToAddProek2(true, "NSP", true , phone)
+        val direction = OnlineDirections.actionOnlinenavhostToAddProek2("NSP", phone, "online" )
         findNavController().navigate(direction)
     }
 
-    override fun onClickSetExpendValues(phone: String, expend: Boolean) {
-        val direction = OnlineDirections.actionOnlinenavhostToHistoryFragment(true, phone.toString())
+    override fun onClickSetHistory(phone: String) {
+        val direction = OnlineDirections.actionOnlinenavhostToHistoryFragment(true, phone)
         findNavController().navigate(direction)
     }
+
+    override fun onClickSetDeleteUser(phone: String) {
+        firebase!!.child(phone).removeValue()
+    }
+
+    override fun onClickSetDeleteUserProject(phone: String, projectName: String) {
+        firebase!!.child(phone).child("project").child(projectName).removeValue()
+    }
+
+    override fun onClickSetUserChangePojectName(phone: String , projectName: String) {
+        val direction = OnlineDirections.actionOnlinenavhostToAddProek2("NSP", phone = phone, "onlineUpdateProject" , projectName = projectName )
+        findNavController().navigate(direction)
+    }
+
 
 }

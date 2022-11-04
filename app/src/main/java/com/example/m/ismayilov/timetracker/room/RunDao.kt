@@ -36,6 +36,18 @@ interface RunDao {
     @Query("update run_history set play =:total where id= :id")
     suspend  fun updateTotal(id: Int, total: Long)
 
+    @Query("update run_history set  project_name=:setProjectName where katagory_name= :katagoryName and project_name =:projectName")
+    suspend  fun updateProjectName(katagoryName: String , projectName: String , setProjectName: String)
+
+    @Query("update run_history set katagory_name=:setKatagoryName where katagory_name= :katagoryName")
+    suspend  fun updateKatagoryName( katagoryName: String , setKatagoryName:String)
+
+    @Query("update run_history set color_code =:coloCode  where katagory_name= :katagoryName and project_name =:projectName")
+    suspend  fun updateProjectColor(coloCode: String, katagoryName: String , projectName: String)
+
+    @Query("update run_history set color_code =:coloCode where katagory_name= :katagoryName")
+    suspend  fun updateKatagoryColor(coloCode: String, katagoryName: String )
+
     @Insert
     suspend fun inertRunHistory(runHistory: RunHistory)
 

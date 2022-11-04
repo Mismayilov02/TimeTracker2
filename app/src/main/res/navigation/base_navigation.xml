@@ -10,9 +10,6 @@
         android:name="com.example.m.ismayilov.timetracker.AddProek"
         android:label="fragment_add_proek"
         tools:layout="@layout/fragment_add_proek" >
-        <argument android:name="katagory_or_project"
-            app:argType="boolean"
-            android:defaultValue="false" />
         <argument
             android:name="katagory_name"
             app:argType="string"
@@ -26,11 +23,14 @@
             android:id="@+id/action_addProek2_to_onlinenavhost"
             app:destination="@id/onlinenavhost" />
         <argument
-            android:name="to_online"
-            app:argType="boolean"
-            android:defaultValue="false" />
-        <argument
             android:name="phone"
+            app:argType="string"
+            android:defaultValue=" " />
+        <argument android:name="type"
+            app:argType="string"
+            android:defaultValue=" " />
+        <argument
+            android:name="project_name"
             app:argType="string"
             android:defaultValue=" " />
     </fragment>
@@ -41,7 +41,8 @@
         tools:layout="@layout/fragment_run_screen" >
         <action
             android:id="@+id/action_runScreen2_to_addProek2"
-            app:destination="@id/addProek2" />
+            app:destination="@id/addProek2"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/historyFragment"
@@ -90,6 +91,8 @@
         tools:layout="@layout/fragment_splash_screen" >
         <action
             android:id="@+id/action_splashScreen2_to_runScreen2"
-            app:destination="@id/runScreen2" />
+            app:destination="@id/runScreen2"
+            app:popUpTo="@id/splashScreen2"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

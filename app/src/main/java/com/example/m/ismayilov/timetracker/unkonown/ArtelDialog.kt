@@ -8,15 +8,18 @@ import android.net.ConnectivityManager
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.navigation.Navigation
 import com.example.m.ismayilov.timetracker.R
+import com.example.m.ismayilov.timetracker.room.Katagory
+import com.example.m.ismayilov.timetracker.room.MyRoomDatabase
 
 class ArtelDialog {
 
-    fun getSuccesReportDialog(context: Context) {
-
-
-    }
+//    fun getSuccesReportDialog(context: Context) {
+//
+//
+//    }
 
     fun getWifiDialog(context: Context) {
         val dialog = Dialog(context)
@@ -28,6 +31,7 @@ class ArtelDialog {
         }
 
     }
+
 
     fun getMaxDialog(context: Context) {
         val dialog = Dialog(context)

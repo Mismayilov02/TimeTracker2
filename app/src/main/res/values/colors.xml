@@ -9,6 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="white_lite">#E4F4FF</color>
     <color name="red">#ED1515</color>
+    <color name="red_delete">#E8FF555A</color>
     <color name="icon_color">#00406F</color>
     <color name="orange">#D85723</color>
     <color name="yellow">#E1AF00</color>
