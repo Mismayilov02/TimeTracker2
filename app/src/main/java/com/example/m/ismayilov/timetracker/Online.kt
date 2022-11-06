@@ -1,6 +1,9 @@
 package com.example.m.ismayilov.timetracker
 
+import android.app.Dialog
 import android.content.ContentValues.TAG
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -8,14 +11,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.m.ismayilov.timetracker.databinding.FragmentOnlineBinding
 import com.example.m.ismayilov.timetracker.onClick.OnClickLIstener
 import com.example.m.ismayilov.timetracker.onClick.OnlineOnClickLIstener
 import com.google.firebase.database.*
+import kotlinx.coroutines.launch
 
 class Online : Fragment()  , OnlineOnClickLIstener {
 
@@ -36,27 +43,18 @@ class Online : Fragment()  , OnlineOnClickLIstener {
          fireBaseDatabase  = FirebaseDatabase.getInstance()
          firebase = fireBaseDatabase!!.getReference("users/")
 
-        firebase!!.addValueEventListener(object: ValueEventListener {
+         firebase!!.addValueEventListener(object: ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 var list = mutableListOf<Users>()
                 for (i in snapshot.children){
-                    try{
                         val value = i.getValue(Users::class.java)
-                        if (value != null) {
-                            list.add(value)
-
-                        } else {
-                            Toast.makeText(requireContext(), "nullc", Toast.LENGTH_SHORT).show()
+                        if (value != null){
+                            if (value.permission){ list.add(value) }
                         }
-                    }catch (e:Exception){
-                        Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
-                    }
                 }
 
-                if(list.size !=0){
-                    binding.onlineIsemptyText.isVisible = false
-                }
+                binding.onlineIsemptyText.isVisible = list.size != 0
                 setAdapter(list)
 
             }
@@ -67,9 +65,9 @@ class Online : Fragment()  , OnlineOnClickLIstener {
 
         })
 
-
         return view
     }
+
 
     fun setAdapter(lists:MutableList<Users>){
         onlineAdapter = OnlineAdapter(requireContext(),this@Online , lists)
@@ -82,7 +80,7 @@ class Online : Fragment()  , OnlineOnClickLIstener {
 
     }
 
-    override fun onClickListenerAction(phone: String) {
+    override fun onClickListenerAddProject(phone: String) {
         val direction = OnlineDirections.actionOnlinenavhostToAddProek2("NSP", phone, "online" )
         findNavController().navigate(direction)
     }
@@ -93,11 +91,11 @@ class Online : Fragment()  , OnlineOnClickLIstener {
     }
 
     override fun onClickSetDeleteUser(phone: String) {
-        firebase!!.child(phone).removeValue()
+        getDeleteProjectOrUserDialog(phone , null)
     }
 
     override fun onClickSetDeleteUserProject(phone: String, projectName: String) {
-        firebase!!.child(phone).child("project").child(projectName).removeValue()
+        getDeleteProjectOrUserDialog(phone , projectName)
     }
 
     override fun onClickSetUserChangePojectName(phone: String , projectName: String) {
@@ -105,5 +103,27 @@ class Online : Fragment()  , OnlineOnClickLIstener {
         findNavController().navigate(direction)
     }
 
+    fun getDeleteProjectOrUserDialog( phone:String, projectName:String?) {
+        val dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.delete_dialog)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.show()
+        dialog.findViewById<ImageView>(R.id.delete_dialog_exit).setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.findViewById<TextView>(R.id.delete_dialog_yes).setOnClickListener {
+            lifecycleScope.launch {
+                if (projectName ==null){
+                    firebase!!.child(phone).removeValue()
+                }else{
+                    firebase!!.child(phone).child("project").child(projectName).removeValue()
+                }
+
+                dialog.dismiss()
+            }
+
+        }
+
+    }
 
 }

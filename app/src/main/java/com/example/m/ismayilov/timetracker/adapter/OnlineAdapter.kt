@@ -95,7 +95,7 @@ class OnlineAdapter(val context: Context, var onClickLIstener: OnlineOnClickLIst
             editOnClick(false , position , holder)
         }
         holder.add.setOnClickListener {
-            onClickLIstener.onClickListenerAction(holder.phone.text.toString())
+            onClickLIstener.onClickListenerAddProject(holder.phone.text.toString())
         }
         holder.profile.setOnClickListener {
             onClickLIstener.onClickSetHistory(list.get(position).phone)

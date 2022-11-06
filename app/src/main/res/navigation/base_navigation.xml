@@ -82,7 +82,7 @@
         tools:layout="@layout/fragment_add_user" >
         <action
             android:id="@+id/action_addUser_to_runScreen2"
-            app:destination="@id/runScreen2" />
+            app:destination="@id/onlinenavhost" />
     </fragment>
     <fragment
         android:id="@+id/splashScreen2"

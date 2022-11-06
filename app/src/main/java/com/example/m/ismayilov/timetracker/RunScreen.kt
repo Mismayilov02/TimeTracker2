@@ -75,12 +75,14 @@ class RunScreen : Fragment() , OnClickLIstener {
 
 
         binding.runscreenEmptyText.setOnClickListener {
-            findNavController().navigate(R.id.action_runScreen2_to_addProek2)
+            val direction = RunScreenDirections.actionRunScreen2ToAddProek2(projectName = "nulll")
+            findNavController().navigate(direction)
         }
 
 
         binding.runAddKatagory.setOnClickListener {
-            findNavController().navigate(R.id.action_runScreen2_to_addProek2)
+            val direction = RunScreenDirections.actionRunScreen2ToAddProek2(projectName = "null")
+            findNavController().navigate(direction)
         }
 
         return view
@@ -158,26 +160,26 @@ class RunScreen : Fragment() , OnClickLIstener {
     }
 
     fun setRunAdatpterOrUpdate(list:MutableList<RunHistory>){
-        if (!updateRun){
+//        if (!updateRun){
             runProyektRecycleAdapter = RunProyektRecycleAdapter(requireContext() ,list  , this@RunScreen)
             binding.runRunProyekt.setHasFixedSize(true)
             binding.runRunProyekt.setLayoutManager(GridLayoutManager(activity, 1))
             binding.runRunProyekt.adapter = runProyektRecycleAdapter
             updateRun = true
-        }else{
-            runProyektRecycleAdapter.update(list)
-        }
+//        }else{
+//            runProyektRecycleAdapter.update(list)
+//        }
     }
     fun setAdapterRunOrUpdate(katagory: MutableList<Katagory>  , hashMap:HashMap<String , MutableList<Katagory>>){
-        if (!updateKatagory){
+//        if (!updateKatagory){
             katagoryRecycleAdapter = KatagoryRecycleAdapter(requireContext() , katagory ,hashMap , this@RunScreen)
             binding.runAllProyekt.setHasFixedSize(true)
             binding.runAllProyekt.setLayoutManager(GridLayoutManager(activity, 1))
             binding.runAllProyekt.adapter = katagoryRecycleAdapter
             updateKatagory = true
-        }else{
-            katagoryRecycleAdapter.update(katagory , hashMap)
-        }
+//        }else{
+//            katagoryRecycleAdapter.update(katagory , hashMap)
+//        }
     }
 
 

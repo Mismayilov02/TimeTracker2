@@ -45,7 +45,7 @@ class AddProek : Fragment() {
         fireBaseDatabase = FirebaseDatabase.getInstance()
         firebase = fireBaseDatabase!!.getReference("users/")
         val args: AddProekArgs by navArgs()
-        if (args.type.equals("project") || args.type.equals("online")) {
+        if (args.type.equals("project") || args.type.equals("online") || !args.projectName.equals("nulll")) {
             binding.addProektName.setHint("Project Name")
         }
 
@@ -133,7 +133,7 @@ class AddProek : Fragment() {
       lifecycleScope.launch {
           if (projectName.equals("nulll")){
               myRoomDatabase.katagoryDao().updateKatagoryColor(katagoryName , defaultColor)
-            myRoomDatabase.katagoryDao().updateKatagoryName(katagoryName , binding.addProektName.text.toString())
+              myRoomDatabase.katagoryDao().updateKatagoryName(katagoryName , binding.addProektName.text.toString())
               myRoomDatabase.runDao().updateKatagoryColor(defaultColor , katagoryName )
               myRoomDatabase.runDao().updateKatagoryName( katagoryName , binding.addProektName.text.toString() )
 
@@ -152,7 +152,7 @@ class AddProek : Fragment() {
         var project =  HashMap<String, String>()
         project.put("projectName" , projectName)
         project.put("colorCode" , colorCode)
-        FirebaseDatabase.getInstance().getReference("users").child(phone).child("project").child(projectName)
+        FirebaseDatabase.getInstance().getReference("users/").child(phone).child("project").child(projectName)
             .setValue(project)
         findNavController().navigate(R.id.action_addProek2_to_onlinenavhost)
     }

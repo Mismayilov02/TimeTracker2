@@ -4,11 +4,11 @@ import android.content.Context
 import android.content.SharedPreferences
 import java.util.*
 
-class SharedPreferencesManager(context: Context) {
-    //constants for SharedPreference
+class SharedPreferencesManager (context: Context){
+
     private val PRIVATE_MODE = 0
     var preferences: SharedPreferences = context.getSharedPreferences(context.packageName, PRIVATE_MODE)
-     var editor: SharedPreferences.Editor  = preferences.edit()
+    var editor: SharedPreferences.Editor  = preferences.edit()
 //    var context: Context? = context
 //
 //    fun SharedPreferenceManager(context: Context) {
@@ -64,4 +64,5 @@ class SharedPreferencesManager(context: Context) {
     fun getLong(key: String, defValue: Long?): Long? {
         return preferences!!.getLong(key.lowercase(Locale.getDefault()), defValue!!)
     }
+
 }

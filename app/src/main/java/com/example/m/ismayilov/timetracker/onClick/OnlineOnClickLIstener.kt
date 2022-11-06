@@ -4,7 +4,7 @@ import com.example.m.ismayilov.timetracker.UserProjectName
 
 interface OnlineOnClickLIstener {
     fun onClickListenerId(id:Int , play:Boolean)
-    fun onClickListenerAction(katagoryName: String)
+    fun onClickListenerAddProject(katagoryName: String)
     fun onClickSetHistory(phone: String )
     fun onClickSetDeleteUser(phone: String )
     fun onClickSetDeleteUserProject(phone: String  , projectName: String)
