@@ -12,14 +12,16 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.example.m.ismayilov.timetracker.BaseActivity
-import com.example.m.ismayilov.timetracker.Constant
-import com.example.m.ismayilov.timetracker.R
-import com.example.m.ismayilov.timetracker.SharedPreferencesManager
+import com.example.m.ismayilov.timetracker.*
 import com.example.m.ismayilov.timetracker.databinding.FragmentSplashScreenBinding
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import java.util.*
 
 class SplashScreen : Fragment() {
@@ -45,7 +47,8 @@ class SplashScreen : Fragment() {
         toDateCheck()
 
         Handler(Looper.getMainLooper()).postDelayed({
-            sellectSplashToId()
+            if (ArtelDialog().isConnected(requireContext())) sellectSplashToId()
+            else ArtelDialog().getWifiDialog(requireContext() , requireActivity())
         }, 2500)
 
         return view
@@ -53,7 +56,7 @@ class SplashScreen : Fragment() {
 
     fun sellectSplashToId() {
         if (sharedPreferencesManager.getBoolean("login", false)!!) {
-            startActivity(Intent(requireContext(), BaseActivity::class.java))
+            checkUser()
 
         } else if (sharedPreferencesManager.getBoolean("create", false)!!) {
             val direction = SplashScreenDirections.navigationSplastTologin(true)
@@ -61,6 +64,27 @@ class SplashScreen : Fragment() {
         } else {
             findNavController().navigate(R.id.action_splashScreen_to_createFragment)
         }
+    }
+
+    fun checkUser(){
+        var sorgu  = FirebaseDatabase.getInstance().getReference("users/").orderByChild("phone")
+            .equalTo(sharedPreferencesManager.getString("phone", "notFoundUser"))
+        sorgu.addValueEventListener(object: ValueEventListener {
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+               if (snapshot.exists()) {
+                   startActivity(Intent(requireContext(), BaseActivity::class.java))
+               }else{
+                   findNavController().navigate(R.id.action_splashScreen_to_createFragment)
+               }
+
+                sorgu.removeEventListener(this)
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(requireContext(), "value,jyck.email ", Toast.LENGTH_SHORT).show()
+            }
+
+        })
     }
 
     @RequiresApi(Build.VERSION_CODES.N)

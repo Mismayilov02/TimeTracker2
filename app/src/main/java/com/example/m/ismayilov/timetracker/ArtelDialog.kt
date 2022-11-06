@@ -1,13 +1,18 @@
 package com.example.m.ismayilov.timetracker
 
+import android.app.Activity
 import android.app.Dialog
+import android.app.PendingIntent.getActivity
 import android.content.Context
+import android.content.Intent.getIntent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.Navigation
 
 class ArtelDialog {
@@ -17,13 +22,18 @@ class ArtelDialog {
 
     }
 
-    fun getWifiDialog(context: Context) {
+    fun getWifiDialog(context: Context  ,activity: Activity) {
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.wifieror_dialoq)
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
         dialog.findViewById<ImageView>(R.id.wifierror_exit_btn).setOnClickListener {
             dialog.dismiss()
+        }
+        dialog.findViewById<CardView>(R.id.wifierror_again_btn).setOnClickListener {
+//            activity.finish();
+            dialog.dismiss()
+            activity.recreate();
         }
 
     }

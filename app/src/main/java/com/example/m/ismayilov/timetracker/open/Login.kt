@@ -32,6 +32,7 @@ class Login : Fragment() {
 
     lateinit var binding: FragmentLoginBinding
     var password:String = ""
+    var name:String = ""
     var btnClisck = false
     var view :FrameLayout? = null
     var fireBaseDatabase: FirebaseDatabase? = null
@@ -109,12 +110,14 @@ class Login : Fragment() {
                         try {
                             val value = i.getValue(Users::class.java)
                             password = value!!.password
+                            name = value.name
                         } catch (e: Exception) {
                             Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
                         }
                     }
                     if (snapshot.exists() && password.equals(binding.loginPassword.text.toString())) {
                         sharedPreferencesManager.setValue("login", true)
+                        sharedPreferencesManager.setValue("name" , name)
                         startActivity(Intent(requireContext(), BaseActivity::class.java))
                         activity!!.finish()
                     } else {

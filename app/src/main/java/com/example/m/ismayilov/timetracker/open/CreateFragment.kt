@@ -82,7 +82,7 @@ class CreateFragment : Fragment() {
                     chechkFirebaseInformation(phone)
                 }
             }else{
-                artelDialog.getWifiDialog(requireContext())
+                artelDialog.getWifiDialog(requireContext() , requireActivity())
             }
         }
 
