@@ -10,9 +10,6 @@
         android:name="com.example.m.ismayilov.timetracker.AddProek"
         android:label="fragment_add_proek"
         tools:layout="@layout/fragment_add_proek" >
-        <argument android:name="katagory_or_project"
-            app:argType="boolean"
-            android:defaultValue="false" />
         <argument
             android:name="katagory_name"
             app:argType="string"
@@ -22,6 +19,19 @@
             app:destination="@id/runScreen2"
             app:popUpTo="@id/addProek2"
             app:popUpToInclusive="true" />
+
+        <argument
+            android:name="phone"
+            app:argType="string"
+            android:defaultValue=" " />
+        <argument android:name="type"
+            app:argType="string"
+            android:defaultValue=" " />
+        <argument
+            android:name="project_name"
+            app:argType="string"
+            android:defaultValue=" " />
+
     </fragment>
     <fragment
         android:id="@+id/runScreen2"

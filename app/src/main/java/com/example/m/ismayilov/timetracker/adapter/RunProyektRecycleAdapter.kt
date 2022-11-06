@@ -92,21 +92,28 @@ class RunProyektRecycleAdapter(val context: Context, var proyekts: MutableList<R
 
 
     fun changeTime(){
-        for (i in 0..proyekts.size-1){
-            var spliteText = timeTextList.get(i).text.split(":" )
-            var horse = spliteText[0].toInt()
-            var minute = spliteText[1].toInt()
-            var second = spliteText[2].toInt()+1
+        try{
+            for (i in 0..proyekts.size - 1) {
+                var spliteText = timeTextList.get(i).text.split(":")
+                var horse = spliteText[0].toInt()
+                var minute = spliteText[1].toInt()
+                var second = spliteText[2].toInt() + 1
 
-            if(second == 60){
-                second = 0
-                minute +=1
+                if (second == 60) {
+                    second = 0
+                    minute += 1
+                }
+                if (minute == 60) {
+                    minute = 0
+                    horse += 1
+                }
+                timeTextList.get(i).text =
+                    ("${timeToString(horse.toLong())}:${timeToString(minute.toLong())}:${
+                        timeToString(second.toLong())
+                    }")
             }
-            if(minute == 60){
-                minute = 0
-                horse +=1
-            }
-            timeTextList.get(i).text = ("${timeToString(horse.toLong())}:${timeToString(minute.toLong())}:${timeToString(second.toLong())}")
+        }catch (e:Exception){
+            println(e.message)
         }
     }
 

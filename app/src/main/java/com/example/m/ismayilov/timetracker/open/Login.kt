@@ -68,6 +68,15 @@ class Login : Fragment() {
 
     fun textEmptyCheck(){
         var isEmpty  = true
+        if (binding.loginPhone.text?.isEmpty() == false) {
+            if (binding.loginPhone.text!!.length < 9) {
+                isEmpty =  false
+                binding.loginPhone.error = "Phone Lengs Error"
+                binding.loginPhone.requestFocus()
+            }
+        }
+
+
         if(binding.loginPhone.text.isNullOrEmpty()){
             isEmpty =  false
             binding.loginPhone.error  =  "Phone required"
@@ -81,15 +90,17 @@ class Login : Fragment() {
 
         if (isEmpty){
             btnClisck = true
-            sharedPreferencesManager.setValue("phone" , binding.loginPhone.text.toString())
-            login()
+            var phone:String = binding.loginPhone.text!!.substring(binding.loginPhone.text!!.length-9 ,binding.loginPhone.text!!.length)
+            sharedPreferencesManager.setValue("phone" , phone)
+            login(phone)
         }
 
     }
 
 
-    fun login(){
-        var sorgu  = firebase!!.orderByChild("phone").equalTo(binding.loginPhone.text.toString())
+    fun login(phone:String){
+
+        var sorgu  = firebase!!.orderByChild("phone").equalTo(phone)
 
         sorgu.addValueEventListener(object:ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {

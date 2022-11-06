@@ -17,7 +17,7 @@
             android:layout_height="45dp"
             android:layout_marginTop="25dp"
             android:background="@drawable/addprojekt_textview_backround"
-            android:hint="katagori adi"
+            android:hint="Katagory Name"
             android:inputType="text"
             android:maxLines="1"
             android:paddingLeft="15dp"

@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     >
 
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
@@ -23,7 +24,47 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingBottom="5dp">
+
+            <ImageView
+                android:id="@+id/katagory_add"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="8dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/katagory_expend"
+                app:layout_constraintEnd_toStartOf="@+id/katagory_delete"
+                app:layout_constraintTop_toTopOf="@+id/katagory_expend"
+                app:layout_constraintVertical_bias="0.8"
+                app:srcCompat="@drawable/plus"
+                app:tint="@color/icon_color" />
+
+            <ImageView
+                android:id="@+id/katagory_edit"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="8dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/katagory_expend"
+                app:layout_constraintEnd_toStartOf="@+id/katagory_add"
+                app:layout_constraintTop_toTopOf="@+id/katagory_expend"
+                app:layout_constraintVertical_bias="0.8"
+                app:srcCompat="@drawable/pencil"
+                app:tint="@color/icon_color" />
+
+            <ImageView
+                android:id="@+id/katagory_delete"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="10dp"
+                android:padding="5dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/katagory_name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/katagory_name"
+                app:srcCompat="@drawable/trash"
+                app:tint="@color/red" />
 
             <Button
                 android:id="@+id/katagory_design_save_btn"
@@ -50,7 +91,7 @@
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/katagory_expend" />
+                app:layout_constraintTop_toBottomOf="@+id/katagory_name" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/katagory_color"
@@ -67,11 +108,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:layout_marginStart="15dp"
+                android:layout_marginEnd="50dp"
                 android:gravity="center|start"
                 android:text="Project Name"
                 android:textColor="@color/open_color"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/katagory_expend"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/katagory_color"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -81,6 +125,7 @@
                 android:layout_height="40dp"
                 android:layout_marginEnd="10dp"
                 android:padding="5dp"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="@+id/katagory_name"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/katagory_name"
@@ -93,6 +138,7 @@
                 android:layout_height="40dp"
                 android:layout_marginEnd="5dp"
                 android:padding="8dp"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="@+id/katagory_expend"
                 app:layout_constraintEnd_toStartOf="@+id/katagory_expend"
                 app:layout_constraintTop_toTopOf="@+id/katagory_expend"
@@ -102,5 +148,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

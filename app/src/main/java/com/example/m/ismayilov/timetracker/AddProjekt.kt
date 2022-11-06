@@ -18,14 +18,17 @@ import com.example.m.ismayilov.timetracker.databinding.FragmentAddProekBinding
 import com.example.m.ismayilov.timetracker.room.Katagory
 import com.example.m.ismayilov.timetracker.room.MyRoomDatabase
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.launch
 
 class AddProek : Fragment() {
-
     lateinit var myRoomDatabase: MyRoomDatabase
     lateinit var binding: FragmentAddProekBinding
     var view: FrameLayout? = null
     var defaultColor = "#ED1515"
+    var fireBaseDatabase: FirebaseDatabase? = null
+    var firebase: DatabaseReference? = null
     lateinit var recycleAdapte: ColorRecycleAdapte
     var historyAll: MutableList<String>? =
         mutableListOf("#ED1515", "#D85723", "#E1AF00", "#4A9F00", "#0FDFCA" , "#FF9900" , "#FFA5A5" , "#00FFF0" , "#8E15ED" , "#ED15B1" , "#00FF29")
@@ -38,12 +41,17 @@ class AddProek : Fragment() {
         binding = FragmentAddProekBinding.inflate(inflater, container, false)
         view = binding.root
         myRoomDatabase = MyRoomDatabase.getDatabase(requireContext())
-
-
+        fireBaseDatabase = FirebaseDatabase.getInstance()
+        firebase = fireBaseDatabase!!.getReference("users/")
         val args: AddProekArgs by navArgs()
-        if (args.katagoryOrProject) {
-            binding.addProektName.setHint("Proyek adi")
+        if (args.type.equals("project") || !args.projectName.equals("nulll")) {
+            binding.addProektName.setHint("Project Name")
         }
+
+        if (args.type.equals("changeName")){
+            binding.addAddBtn.text = "Change"
+        }
+
 
         lifecycleScope.launch {
             if (myRoomDatabase.colorDao().readAllColor().size != 0) {
@@ -61,11 +69,11 @@ class AddProek : Fragment() {
         }
 
         binding.addAddBtn.setOnClickListener {
-           if (binding.addProektName.text.isEmpty()){
-               setSnakebarMessage(args.katagoryOrProject , it)
-           }else{
-               saveDatabase(args.katagoryOrProject , args.katagoryName)
-           }
+            if (binding.addProektName.text.isEmpty()){
+                Snackbar.make(it, "Name cannot be blank", Snackbar.LENGTH_SHORT).show()
+            }else{
+                saveDatabase(args.type , args.katagoryName , args.phone , args.projectName)
+            }
         }
 
 
@@ -92,36 +100,45 @@ class AddProek : Fragment() {
 
     }
 
-    fun saveDatabase(katagoryOrProyek: Boolean  , katagoryName :String) {
+    fun saveDatabase(type:String, katagoryName :String , phone:String , projectName: String) {
         var katagory:Katagory
         lifecycleScope.launch {
-            if (!katagoryOrProyek) {
-                 katagory = Katagory(0, defaultColor, binding.addProektName.text.toString() , "nulll" ,false ,false)
+            if (type.equals("project")) {
+                katagory = Katagory(0, defaultColor , katagoryName , binding.addProektName.text.toString(),false  , false)
                 myRoomDatabase.katagoryDao().writeKatagoryr(katagory)
                 findNavController().navigate(R.id.action_addProek2_to_runScreen2)
-
+            }
+            else if (type.equals("changeName")){
+                changeNameDatabase(katagoryName , projectName)
             }
             else {
-                 katagory = Katagory(0, defaultColor , katagoryName , binding.addProektName.text.toString(),false  , false)
+                katagory = Katagory(0, defaultColor, binding.addProektName.text.toString() , "nulll" ,false ,false)
                 myRoomDatabase.katagoryDao().writeKatagoryr(katagory)
                 findNavController().navigate(R.id.action_addProek2_to_runScreen2)
+
             }
 
-
         }
+
     }
 
-    fun setSnakebarMessage(katagoryOrProyek: Boolean , it:View  ){
-        if (!katagoryOrProyek) {
-            Snackbar.make(it, "lutfen bir katagory ismi giriniz", Snackbar.LENGTH_SHORT).show()
-        } else {
-                Snackbar.make(it, "lutfen bir proyekt ismi giriniz", Snackbar.LENGTH_SHORT).show()
-            }
+    fun changeNameDatabase(katagoryName: String , projectName: String){
+        lifecycleScope.launch {
+            if (projectName.equals("nulll")){
+                myRoomDatabase.katagoryDao().updateKatagoryColor(katagoryName , defaultColor)
+                myRoomDatabase.katagoryDao().updateKatagoryName(katagoryName , binding.addProektName.text.toString())
+                myRoomDatabase.runDao().updateKatagoryColor(defaultColor , katagoryName )
+                myRoomDatabase.runDao().updateKatagoryName( katagoryName , binding.addProektName.text.toString() )
 
+            }else{
+                myRoomDatabase.katagoryDao().updateProjectColor(defaultColor , projectName , katagoryName)
+                myRoomDatabase.katagoryDao().updateProjectName(binding.addProektName.text.toString() , projectName ,katagoryName)
+                myRoomDatabase.runDao().updateProjectColor(defaultColor ,katagoryName , projectName )
+                myRoomDatabase.runDao().updateProjectName(katagoryName , projectName , binding.addProektName.text.toString() )
+            }
+            findNavController().navigate(R.id.action_addProek2_to_runScreen2)
         }
 
-//    fun saveFirebaseUser(){
-//        findNavController().navigate(R.id.action_addProek2_to_onlinenavhost)
-//    }
+    }
 
 }

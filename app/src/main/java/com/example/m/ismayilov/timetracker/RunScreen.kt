@@ -1,14 +1,19 @@
 package com.example.m.ismayilov.timetracker
 
 import android.annotation.SuppressLint
-import android.content.Intent
+import android.app.Dialog
+import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.os.StrictMode
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.Toast
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -16,6 +21,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.android.volley.AuthFailureError
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.example.m.ismayilov.timetracker.adapter.KatagoryRecycleAdapter
 import com.example.m.ismayilov.timetracker.adapter.RunProyektRecycleAdapter
 import com.example.m.ismayilov.timetracker.databinding.FragmentRunScreenBinding
@@ -23,16 +32,16 @@ import com.example.m.ismayilov.timetracker.onClick.OnClickLIstener
 import com.example.m.ismayilov.timetracker.room.Katagory
 import com.example.m.ismayilov.timetracker.room.MyRoomDatabase
 import com.example.m.ismayilov.timetracker.room.RunHistory
-import com.google.android.material.snackbar.Snackbar
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.database.*
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import java.util.*
-import kotlin.collections.HashMap
-
 
 class RunScreen : Fragment() , OnClickLIstener {
+
    var view: FrameLayout? = null
-    private val serverKey = "BDzjOJCrzrb1AlylmsS4p6HmZmA7EQbVOQFqbZSNvZp0UPafDGP8ya5nUBO29FMgvC8VzqE6VBy8wbnrGvO9z5M"
     lateinit var binding: FragmentRunScreenBinding
     var updateRun = false
     var updateKatagory = false
@@ -66,14 +75,14 @@ class RunScreen : Fragment() , OnClickLIstener {
         myRoomDatabase = MyRoomDatabase.getDatabase(requireContext())
         sharedPreferencesManager = SharedPreferencesManager(requireContext())
         fireBaseDatabase = FirebaseDatabase.getInstance()
+        FirebaseMessaging.getInstance().subscribeToTopic("all");
+//        var  toke = fireBaseDatabase.
         firebase = fireBaseDatabase!!.getReference("users/")
         if (ArtelDialog().isConnected(requireContext())){ firebaseGetProject() }
         else{
             listClear()
             setAdapterKatagory()
         }
-
-        setAdapterRun()
 
 
         binding.runAddKatagory.setOnClickListener {
@@ -152,7 +161,7 @@ class RunScreen : Fragment() , OnClickLIstener {
             runHistory.id = katagoryRun!!.id
             myRoomDatabase.runDao().updateRun(runHistory)
         }
-        updateFireBaseHistory(runHistory)
+        if (runHistory.katagory_name.equals("NSP")){ updateFireBaseHistory(runHistory) }
     }
 
     fun setAdapterKatagory(){
@@ -188,27 +197,27 @@ class RunScreen : Fragment() , OnClickLIstener {
     }
 
     fun setRunAdatpterOrUpdate(list:MutableList<RunHistory>){
-        if (!updateRun){
+//        if (!updateRun){
             runProyektRecycleAdapter = RunProyektRecycleAdapter(requireContext() ,list  , this@RunScreen)
             binding.runRunProyekt.setHasFixedSize(true)
             binding.runRunProyekt.setLayoutManager(GridLayoutManager(activity, 1))
             binding.runRunProyekt.adapter = runProyektRecycleAdapter
             updateRun = true
-        }else{
-            runProyektRecycleAdapter.update(list)
-        }
+//        }else{
+//            runProyektRecycleAdapter.update(list)
+//        }
     }
 
     fun setAdapterRunOrUpdate(katagory: MutableList<Katagory>  , hashMap:HashMap<String , MutableList<Katagory>>){
-        if (!updateKatagory){
+//        if (!updateKatagory){
             katagoryRecycleAdapter = KatagoryRecycleAdapter(requireContext() , katagory ,hashMap , this@RunScreen)
             binding.runAllProyekt.setHasFixedSize(true)
             binding.runAllProyekt.setLayoutManager(GridLayoutManager(activity, 1))
             binding.runAllProyekt.adapter = katagoryRecycleAdapter
             updateKatagory = true
-        }else{
-            katagoryRecycleAdapter.update(katagory , hashMap)
-        }
+//        }else{
+//            katagoryRecycleAdapter.update(katagory , hashMap)
+//        }
     }
 
 
@@ -218,17 +227,17 @@ class RunScreen : Fragment() , OnClickLIstener {
         }
     }
 
-    fun setDesignRunIconView(size:Int){
-        if(size== 0){
-            binding.runscreenClock.isVisible  = false
-            binding.runscreenPlay.isVisible = false
-        }
-        else{
-            binding.runscreenClock.isVisible  = true
-            binding.runscreenPlay.isVisible = true
-        }
+//    fun setDesignRunIconView(size:Int){
+//        if(size== 0){
+//            binding.runscreenClock.isVisible  = false
+//            binding.runscreenPlay.isVisible = false
+//        }
+//        else{
+//            binding.runscreenClock.isVisible  = true
+//            binding.runscreenPlay.isVisible = true
+//        }
 
-    }
+//    }
 
     @SuppressLint("NewApi")
     fun firebaseGetProject(){
@@ -242,7 +251,7 @@ class RunScreen : Fragment() , OnClickLIstener {
                               if (value!!.project != null) {
                                   var hasmapKatagory = mutableListOf<Katagory>()
                                   for ((key, value) in value!!.project!!) {
-                                      nspList.add(value.projectName)
+                                      nspList.add(key)
                                       hasmapKatagory.add(
                                           Katagory(
                                               50,
@@ -250,7 +259,7 @@ class RunScreen : Fragment() , OnClickLIstener {
                                               "NSP",
                                               key,
                                               value.play,
-                                              false
+                                              sharedPreferencesManager.getBoolean("NSPExpend" , false)!!
                                           )
                                       )
                                   }
@@ -275,15 +284,16 @@ class RunScreen : Fragment() , OnClickLIstener {
     }
     @SuppressLint("NewApi")
     fun firebaseUpdatePlay(katagory: Katagory){
-        playBtnOtherClick = false
         var project =  HashMap<String, Any>()
         project.put("play" , !katagory.run)
         project.put("colorCode" , katagory.color_code)
         project.put("projectName" , katagory.project_name)
-        playBtnOtherClick = true
         FirebaseDatabase.getInstance().getReference("users").child(sharedPreferencesManager.getString("phone" , "defaulUserPhone")!!).child("project").child(katagory.project_name)
             .setValue(project)
         firebaseGetProject()
+        val projeName = if (!katagory.run) "Started the ${katagory.project_name} project" else "Stopped the ${katagory.project_name} project"
+        FCM().pushNofication(requireContext(),
+            sharedPreferencesManager.getString("name" , "DefaultUserName"),projeName )
 
     }
 
@@ -317,17 +327,52 @@ class RunScreen : Fragment() , OnClickLIstener {
 
     }
 
+    override fun onClickSetDelete(katagoryName: String, projectName: String) {
+        getDeleteProjectDialog( katagoryName , projectName)
+    }
+
+    override fun onClickSetEditName(projectName: String, katagoryName: String) {
+        val direction = RunScreenDirections.actionRunScreen2ToAddProek2(katagoryName , "" , "changeName" , projectName)
+        Navigation.findNavController(requireView()).navigate(direction)
+    }
+
+
     override fun onClickListenerId(katagory: Katagory) {
-        playBtnOtherClick =true
         updateAllProject(katagory)
     }
 
     override fun onClickListenerAction(katagoryName: String) {
-        val direction = RunScreenDirections.actionRunScreen2ToAddProek2(true, katagoryName)
+        val direction = RunScreenDirections.actionRunScreen2ToAddProek2( katagoryName  , type = "project")
         Navigation.findNavController(requireView()).navigate(direction)
     }
 
-    override fun onClickSetExpendValues(id: Int, expend: Boolean) {
-        setExpendValues(id , expend)
+    override fun onClickSetExpendValues(id: String, expend: Boolean) {
+        setExpendValues(id.toInt() , expend)
     }
+
+    fun getDeleteProjectDialog( katagory:String, project:String) {
+        val dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.delete_dialog)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.show()
+        dialog.findViewById<ImageView>(R.id.delete_dialog_exit).setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.findViewById<TextView>(R.id.delete_dialog_yes).setOnClickListener {
+            lifecycleScope.launch {
+                if (project.equals("nulll")){
+                    myRoomDatabase.katagoryDao().deleteKatagory(katagory)
+                }else{
+                    myRoomDatabase.katagoryDao().deleteProject(katagory , project)
+                }
+                firebaseGetProject()
+                dialog.dismiss()
+            }
+
+        }
+
+
+
+    }
+
 }
